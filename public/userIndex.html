@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script type="text/javascript">
+    if (window.location.protocol == 'file:') {
+        window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+    }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a style="display: none;" class="username" href="#">管理员1</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#signupModal">注册</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#">首页</a></li>
+                <li style="display: none;"><a href="userChooseCompanyCreate.html">添加债权申请表</a></li>
+                <li style="display: none;"><a href="userChooseCompany.html">查看债权申请表</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">首页</h1>
+            <div class="col-sm-12 col-md-12 news-area">
+                <div class="header news-header">
+                    <span>新闻公告</span>
+                    <a href="#">查看更多>></a>
+                </div>
+                <ul class="news-list">
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-22</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-22</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-22</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-22</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                    <li><a href="#">公安部开通非法集资案件投资人信息登记平台首对“e租宝”案<span>2016-02-21</span></a></li>
+                </ul>
+            </div>
+            <div id="noticeArea" style="display: none;" class="col-sm-12 col-md-12 news-area">
+                <div class="news-header">
+                    <span>消息</span>
+                    <a href="#">查看更多>></a>
+                </div>
+                <ul class="news-list">
+                    <li><a href="#">“e租宝”案债权申请已审核完毕<span>2016-02-23</span></a></li>
+                    <li><a href="#">“e租宝”案债权申请投票公告<span>2016-02-22</span></a></li>
+                    <li><a href="#">“e租宝”案债权申请已审核完毕<span>2016-02-23</span></a></li>
+                    <li><a href="#">“e租宝”案债权申请投票公告<span>2016-02-22</span></a></li>
+                    <li><a href="#">“e租宝”案债权申请已审核完毕<span>2016-02-23</span></a></li>
+                    <li><a href="#">“e租宝”案债权申请投票公告<span>2016-02-22</span></a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="loginModalLabel">登录</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="usernameInput" class="col-sm-2 col-sm-offset-1 control-label">用户名</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="usernameInput" placeholder="请输入用户名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordInput" class="col-sm-2 col-sm-offset-1 control-label">密码</label>
+                        <div class="col-sm-7">
+                            <input type="password" class="form-control" id="passwordInput" placeholder="请输入密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-7">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> 记住我
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="loginButton">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="signupModalLabel">注册</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="newusernameInput" class="col-sm-2 col-sm-offset-1 control-label">用户名</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="newusernameInput" placeholder="请输入用户名(长度至少6位以上)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newusernameInput" class="col-sm-2 col-sm-offset-1 control-label">用户名</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="newusernameInput" placeholder="请输入用户名(长度至少6位以上)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newpasswordInput" class="col-sm-2 col-sm-offset-1 control-label">密码</label>
+                        <div class="col-sm-7">
+                            <input type="password" class="form-control" id="newpasswordInput" placeholder="请输入密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newpassword2Input" class="col-sm-2 col-sm-offset-1 control-label">确认密码</label>
+                        <div class="col-sm-7">
+                            <input type="password" class="form-control" id="newpassword2Input" placeholder="请再输入一次密码">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="signupButton">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    function login(username){
+        $('.nav-sidebar li').eq(1).show();
+        $('.nav-sidebar li').eq(2).show();
+        $('#noticeArea').show();
+        $('.navbar-nav li').eq(0).find('a').html(username).show();
+        $('.navbar-nav li').eq(1).hide();
+        $('.navbar-nav li').eq(2).hide();
+    }
+    $(function(){
+        //未登录隐藏登录用户名
+        $('.navbar-nav ul li').eq(0).hide();
+        //未登录隐藏创建和查看债权申请表tab
+        $('.nav-sidebar li').eq(1).hide();
+        $('.nav-sidebar li').eq(2).hide();
+        //未登录隐藏消息列表
+        $('#noticeArea').hide();
+        //登录
+        $('#loginButton').click(function(){
+            $('#loginModal').modal('hide');
+            login($('#usernameInput').val());
+        });
+        //注册
+        $('#signupButton').click(function(){
+            $('#signupModal').modal('hide');
+            login($('#newusernameInput').val());
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        if (window.location.protocol == 'file:') {
+            window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+        }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="username" href="#">用户1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="userIndex.html">首页</a></li>
+                <li><a href="userChooseCompanyCreate.html">添加债权申请表</a></li>
+                <li class="active"><a href="userChooseCompany.html">查看债权申请表</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">查看债券申请表</h1>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="header">
+                    <span>选择债务公司</span>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <ul class="company-list">
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待审核</span>
+                                <span class="company-edit label label-success">查看</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-create label label-default">创建</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待投票</span>
+                                <span class="company-vote label label-primary">投票</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">结束</span>
+                                <span class="company-show label label-danger">投票结果</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待审核</span>
+                                <span class="company-edit label label-success">查看</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待审核</span>
+                                <span class="company-edit label label-success">查看</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待审核</span>
+                                <span class="company-edit label label-success">查看</span>
+                            </div>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userChooseForm.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+
+                            <div>
+                                <span class="company-type">待审核</span>
+                                <span class="company-edit label label-success">查看</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="voteModal" tabindex="-1" role="dialog" aria-labelledby="voteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="voteModalLabel">投票结果</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" style="list-style: none;">
+                    <li>决议一同意2人, 不同意3人</li>
+                    <li>决议二同意1人, 不同意2人</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $('.company-edit').on('click',function(){
+        window.location.href='userChooseForm.html';
+    });
+    $('.company-vote').on('click',function(){
+        window.location.href='userVote.html';
+    });
+    $('.company-create').on('click',function(){
+        window.location.href='userFormCreate.html';
+    });
+    $('.company-show').on('click',function(){
+        $('#voteModal').modal();
+    });
+    $(function () {
+    })
+</script>
+</body>
+</html>

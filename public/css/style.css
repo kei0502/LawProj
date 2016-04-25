@@ -1,0 +1,203 @@
+/*
+ * Base structure
+ */
+* {
+    font-family: "Microsoft YaHei" !important;
+    outline:none; /* 去掉选中后的蓝边 */
+}
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
+}
+
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+    display: none;
+}
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #f5f5f5;
+        border-right: 1px solid #eee;
+    }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #428bca;
+}
+
+
+/*
+ * Main content
+ */
+
+.main {
+    padding: 20px;
+}
+@media (min-width: 768px) {
+    .main {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+}
+.main .page-header {
+    margin-top: 0;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+    margin-bottom: 30px;
+    text-align: center;
+}
+.placeholders h4 {
+    margin-bottom: 0;
+}
+.placeholder {
+    margin-bottom: 20px;
+}
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+/* userindex */
+.header {
+    height: 20px;
+    line-height: 20px;
+    text-align: left;
+    padding-left: 10px;
+    border-left: 3px solid #3E88D3;
+    font-size: 15px;
+    font-weight: bold;
+    border-bottom: none;
+}
+.news-header a {
+    float: right;
+    margin-right: 20px;
+    color: #3E88D3;
+    font-size: 12px;
+}
+.news-list {
+    width: 100%;
+    padding: 5px 5px 10px 0 !important;
+    margin: 0;
+}
+.news-list li {
+    text-align: left;
+    padding: 1px 0 3px 0 !important;
+    border-bottom: 1px dashed #ccc;
+    width: 98%;
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    font-size: 13px;
+    list-style: outside none none;
+}
+.news-list li a {
+    width: 100%;
+    float: left;
+    color: #333;
+}
+.news-list li a span {
+    float: right;
+}
+#noticeArea {
+    margin-top: 20px;
+}
+.company-list {
+    width: 100%;
+    padding: 18px 10px 0 10px;
+    margin: 0;
+    list-style: none;
+}
+.company-list li {
+    padding-left: 3%;
+    padding-right: 3%;
+    height: 56px;
+    float: left;
+    font-size: 14px;
+}
+.company-list-create li {
+    height: 30px;
+}
+.company-list li a:hover, .company-list li a:active, .company-list li a:link, .company-list li a:visited {
+    text-decoration: none;
+}
+.company-list li .date {
+    font-size: 12px;
+    float: right;
+    color: #aaa;
+}
+.company-list li .label {
+    float: right;
+    margin-left: 5px;
+}
+.company-list li .company-type {
+    margin-top: 2px;
+}
+.file-list {
+    list-style: none;
+    padding-top: 7px;
+}
+.file-list li .file-name {
+    margin-bottom: 0;
+    padding-top: 7px;
+    margin-top: 0;
+}
+.file-list li a {
+    margin-left: 10px;
+}
+.vote-list {
+    list-style: none;
+    margin: 15px 0;
+}
+.vote-list li .form-group {
+    margin-top: 10px;
+}

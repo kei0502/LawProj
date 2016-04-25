@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        if (window.location.protocol == 'file:') {
+            window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+        }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">管理员1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="companyManagementAdmin.html">破产企业管理 <span
+                        class="sr-only">(current)</span></a></li>
+                <li><a href="chooseCompanyAdmin.html">债权申请管理</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">破产企业管理</h1>
+            <div class="row">
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalAdd">新增企业信息</button>
+                </div>
+                <div class="col-sm-9">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="selectState">筛选</label>
+                            <div class="col-sm-10">
+                                <select id="selectState" class="form-control">
+                                    <option value="" selected="selected">所有</option>
+                                    <option value="债权申请中">债权申请中</option>
+                                    <option value="已截止申请,但仍有债权申请未处理完成">已截止申请,但仍有债权申请未处理完成</option>
+                                    <option value="已截止申请,等待安排投票">已截止申请,等待安排投票</option>
+                                    <option value="已截止投票,等待线下结果">已截止投票,等待线下结果</option>
+                                    <option value="已完成">已完成</option>
+                                    <option value="已关闭">已关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id='tableCompany' class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>公司编号</th>
+                        <th>公司名称</th>
+                        <th>会计师</th>
+                        <th>申请截止日期</th>
+                        <th>投票日期</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>中国移动</td>
+                        <td>会计师1</td>
+                        <td>2015-12-31 17:00</td>
+                        <td id="tdArrange1"></td>
+                        <td id="tdArrange2">已截止申请,等待安排投票</td>
+                        <td><a id='labelArrange' href='#' class="label label-success">安排投票</a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>中国电信</td>
+                        <td>会计师1</td>
+                        <td>2013-12-31 17:00</td>
+                        <td>2014-01-07 13:00 ~ 2014-01-08 14:00</td>
+                        <td id="tdRegister1">已截止投票,等待线下结果</td>
+                        <td id="tdRegister2"><a id='labelRegister' href="#" class="label label-success">线下投票结果登记</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>中国联通</td>
+                        <td>会计师1</td>
+                        <td>2013-12-31 17:00</td>
+                        <td>2014-01-07 13:00 ~ 2014-01-08 14:00</td>
+                        <td id="tdClose">已完成</td>
+                        <td><a id='labelResult' href='#' class="label label-success">投票结果</a><br/>
+                            <a href='processv1.pdf' target="_blank" class="label label-success">公示1</a><br/>
+                            <a href='processv1.pdf' target="_blank" class="label label-success">公示4</a><br/>
+                            <a id='labelClose' href='#' target="_blank" class="label label-success">关闭项目</a><br/></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>中国石油</td>
+                        <td></td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a><br/>
+                            <a href="#" class="label label-success labelCompany">添加公司审核</a><br/>
+                            <a href="#" class="label label-success labelAccountant">添加会计审核</a><br/></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>中国石化</td>
+                        <td></td>
+                        <td>2015-12-31 17:00</td>
+                        <td></td>
+                        <td>已截止申请,但仍有债权申请未处理完成</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>工行银行</td>
+                        <td>会计师1</td>
+                        <td>2015-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>建设银行</td>
+                        <td>会计师1</td>
+                        <td>2015-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>农业银行</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a><br/>
+                            <a href="#" class="label label-success labelAccountant">添加会计审核</a><br/></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>中国银行</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a><br/>
+                            <a href="#" class="label label-success labelCompany">添加公司审核</a><br/></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>交通银行</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a><br/>
+                            <a href="#" class="label label-success labelAccountant">添加会计审核</a><br/></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>万科</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>碧桂园</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>绿城</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>绿地</td>
+                        <td>会计师1</td>
+                        <td>2016-12-31 17:00</td>
+                        <td></td>
+                        <td>债权申请中</td>
+                        <td><a href="applyManagementAdmin.html" class="label label-success">债权申请管理</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalAdd" role="dialog" aria-labelledby="modalAddLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalAddLabel">新增企业信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputIdAdd">公司编号</label>
+                        <div class="col-sm-7">
+                            <input id="inputIdAdd" type="text" class="form-control" placeholder="公司编号"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputNameAdd">公司名称</label>
+                        <div class="col-sm-7">
+                            <input id="inputNameAdd" type="text" class="form-control" placeholder="公司名称"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputCreateAdd">案子创建日期</label>
+                        <div class="col-sm-7">
+                            <input id="inputCreateAdd" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd" placeholder="案子创建日期"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputBalanceAdd">结算日期</label>
+                        <div class="col-sm-7">
+                            <input id="inputBalanceAdd" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd" placeholder="结算日期"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputExpireAdd">申请截止</label>
+                        <div class="col-sm-7">
+                            <input id="inputExpireAdd" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd hh:ii" placeholder="申请截止时间"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalArrange" role="dialog" aria-labelledby="modalArrangeLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalArrangeLabel">安排投票</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputStartArrange">投票开始</label>
+                        <div class="col-sm-7">
+                            <input id="inputStartArrange" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd hh:ii" placeholder="投票开始时间"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="inputEndArrange">投票结束</label>
+                        <div class="col-sm-7">
+                            <input id="inputEndArrange" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd hh:ii" placeholder="投票结束时间"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <button class="btn btn-primary" id="buttonAddItemArrange">增加投票项目</button>
+                        </div>
+                    </div>
+                    <div class="collapse" id="divItemArrange">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1 control-label"
+                                   for="inputItemNameArrange">项目名称</label>
+                            <div class="col-sm-7">
+                                <input id="inputItemNameArrange" type="text" class="form-control" placeholder="项目名称"/>
+                            </div>
+                        </div>
+                        <div class="form-group" id="divItemGroupArrange">
+                            <label class="col-sm-2 col-sm-offset-1 control-label">选择投票群体</label>
+                            <div class="col-sm-7">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id='divItemGroupSelectAllArrange' type="checkbox"> 全选
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 群体1
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 群体2
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 群体3
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> 群体4
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1 control-label"
+                                   for="inputItemFileArrange">项目文件</label>
+                            <div class="col-sm-7">
+                                <input id="inputItemFileArrange" type="file" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-7 col-sm-offset-3">
+                                <button class="btn btn-primary" id="buttonItemCommitArrange">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label"
+                               for="inputItemHiddenArrange">项目文件</label>
+                        <div class="col-sm-7">
+                            <input id="inputItemHiddenArrange" type="hidden" class="form-control" placeholder=""/>
+                            <table class="table table-striped table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>群体</th>
+                                    <th>文件</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>决议1</td>
+                                    <td>群体1<br/>群体2<br/></td>
+                                    <td><a href="processv1.pdf" target="_blank">查看</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnCommitArrange">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalRegister" role="dialog" aria-labelledby="modalRegisterLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalRegisterLabel">线下投票结果登记</h4>
+            </div>
+            <div class="modal-body text-center">
+                <h4>公示1</h4>
+                <form class="form-inline">
+                    <div class="form-group has-success">
+                        <label for="inputAcceptPeople1Register" class="text-success">赞成</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">人数</div>
+                            <input type="text" class="form-control" id="inputAcceptPeople1Register">
+                            <div class="input-group-addon">金额</div>
+                            <input type="text" class="form-control" id="inputAcceptAmount1Register">
+                        </div>
+                    </div>
+                    <div class="form-group has-error">
+                        <label for="inputRejectPeople1Register" class="text-danger">反对</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">人数</div>
+                            <input type="text" class="form-control" id="inputRejectPeople1Register">
+                            <div class="input-group-addon">金额</div>
+                            <input type="text" class="form-control" id="inputRejectAmount1Register">
+                        </div>
+                    </div>
+                </form>
+                <h4>决议2</h4>
+                <form class="form-inline">
+                    <div class="form-group has-success">
+                        <label for="inputAcceptPeople1Register" class="text-success">赞成</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">人数</div>
+                            <input type="text" class="form-control" id="inputAcceptPeople2Register">
+                            <div class="input-group-addon">金额</div>
+                            <input type="text" class="form-control" id="inputAcceptAmount2Register">
+                        </div>
+                    </div>
+                    <div class="form-group has-error">
+                        <label for="inputRejectPeople1Register" class="text-danger">反对</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">人数</div>
+                            <input type="text" class="form-control" id="inputRejectPeople2Register">
+                            <div class="input-group-addon">金额</div>
+                            <input type="text" class="form-control" id="inputRejectAmount2Register">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnCommitRegister">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalResult" role="dialog" aria-labelledby="modalResultLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalResultLabel">投票结果登记</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-success">公示1 : 赞成 5 人,金额 100 元,反对 1 人,金额 1 元,通过</p>
+                <p class="text-danger">公示2 : 赞成 1 人,金额 100 元,反对 1 人,金额 1 元,不通过</p>
+                <p class="text-danger">公示2 : 赞成 5 人,金额 100 元,反对 1 人,金额 100 元,不通过</p>
+                <p class="text-success">公示4 : 赞成 100 人,金额 100 元,反对 1 人,金额 1 元,通过</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalCompany" role="dialog" aria-labelledby="modalCompanyLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalCompanyLabel">新增企业审核</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label"
+                               for="inputUsernameCompany">用户名</label>
+                        <div class="col-sm-7">
+                            <input id="inputUsernameCompany" type="text" class="form-control"
+                                   placeholder="公司账户用户名"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label"
+                               for="inputPassword1Company">密码</label>
+                        <div class="col-sm-7">
+                            <input id="inputPassword1Company" type="password" class="form-control"
+                                   placeholder="公司账户密码"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label"
+                               for="inputPassword2Company">密码确认</label>
+                        <div class="col-sm-7">
+                            <input id="inputPassword2Company" type="password" class="form-control"
+                                   placeholder="公司账户密码确认"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnCommitCompany">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalAccountant" role="dialog" aria-labelledby="modalAccountantLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalAccountantLabel">新增会计审核</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 col-sm-offset-1 control-label" for="selectAccountant">选择会计</label>
+                        <div class="col-sm-7">
+                            <select id="selectAccountant" class="form-control">
+                                <option selected="selected">添加新会计师</option>
+                                <option>会计师1</option>
+                                <option>会计师2</option>
+                                <option>会计师3</option>
+                                <option>会计师4</option>
+                                <option>会计师5</option>
+                                <option>会计师6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="collapse in" id="divRegisterAccountant">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1 control-label"
+                                   for="inputUsernameAccountant">用户名</label>
+                            <div class="col-sm-7">
+                                <input id="inputUsernameAccountant" type="text" class="form-control"
+                                       placeholder="会计账户用户名"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1 control-label"
+                                   for="inputPassword1Accountant">密码</label>
+                            <div class="col-sm-7">
+                                <input id="inputPassword1Accountant" type="password" class="form-control"
+                                       placeholder="会计账户密码"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1 control-label"
+                                   for="inputPassword2Accountant">密码确认</label>
+                            <div class="col-sm-7">
+                                <input id="inputPassword2Accountant" type="password" class="form-control"
+                                       placeholder="会计账户密码确认"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnCommitAccountant">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(function ($) {
+        var $tableCompany = $('#tableCompany').DataTable({
+//            searching: false,
+            lengthChange: false,
+            info: false,
+            ordering: false
+        });
+        $('#selectAccountant').change(function () {
+            $('#divRegisterAccountant').collapse(this.selectedIndex ? 'hide' : 'show');
+        });
+        var dtpOption = {
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true,
+            language: 'zh-CN'
+        }, shortDtpOption = {autoclose: true, todayBtn: true, todayHighlight: true, language: 'zh-CN', minView: 2};
+        $('#inputCreateAdd').datetimepicker(shortDtpOption);
+        $('#inputBalanceAdd').datetimepicker(shortDtpOption);
+        $('#inputExpireAdd').datetimepicker(dtpOption);
+        $('#inputStartArrange').datetimepicker(dtpOption);
+        $('#inputEndArrange').datetimepicker(dtpOption);
+        $('#labelArrange').click(function () {
+            $('#modalArrange').modal('show');
+            return false;
+        });
+        $('#buttonAddItemArrange').click(function () {
+            $('#divItemArrange').collapse('show');
+            return false;
+        });
+        $('#divItemGroupSelectAllArrange').change(function () {
+            $('#divItemGroupArrange input[type=checkbox]').prop('checked', this.checked);
+        });
+        $('#buttonItemCommitArrange').click(function () {
+            $('#divItemArrange').collapse('hide');
+            $('#divItemArrange input[type=text]').val('');
+            $('#divItemArrange input[type=file]').val('');
+            $('#divItemGroupArrange input[type=checkbox]').prop('checked', false);
+            return false;
+        });
+        $('#btnCommitArrange').click(function () {
+            $('#tdArrange1').text($('#inputStartArrange').val() + ' ~ ' + $('#inputEndArrange').val());
+            $('#tdArrange2').text('等待投票');
+            $('#labelArrange').remove();
+            $('#modalArrange').modal('hide');
+        });
+        $('#labelRegister').click(function () {
+            $('#modalRegister').modal('show');
+            return false;
+        });
+        $('#btnCommitRegister').click(function () {
+            $('#tdRegister1').text('已完成');
+            $('#tdRegister2').html('<a id="labelResult2" href="#" class="label label-success">投票结果</a><br/><a href="processv1.pdf" target="_blank" class="label label-success">公示1</a><br/>');
+            $('#labelResult2').click(showResult);
+            $('#modalRegister').modal('hide');
+        });
+        function showResult() {
+            $('#modalResult').modal('show');
+            return false;
+        }
+
+        $('#labelResult').click(showResult);
+        var currentLabelCompany = null, currentLabelAccount = null;
+        $('.labelCompany').click(function () {
+            currentLabelCompany = this;
+            $('#modalCompany').modal('show');
+            return false;
+        });
+        $('#btnCommitCompany').click(function () {
+            $(currentLabelCompany).hide().next().hide();
+            $('#modalCompany').modal('hide');
+        });
+        $('.labelAccountant').click(function () {
+            currentLabelAccount = this;
+            $('#modalAccountant').modal('show');
+            return false;
+        });
+        $('#btnCommitAccountant').click(function () {
+            $(currentLabelAccount).hide().next().hide();
+            $('#modalAccountant').modal('hide');
+        });
+        $('#labelClose').click(function () {
+            if (confirm("确认关闭该项目?一旦关闭将不可恢复!")) {
+                $(this).parent().empty();
+                $('#tdClose').text('已关闭');
+            }
+            return false;
+        });
+        $('#tableCompany').parent().parent().prev().empty();
+        var filter = $('#selectState').val();
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            if (filter.length === 0) {
+                return true;
+            } else {
+                return data[5] === filter;
+            }
+        });
+        $('#selectState').change(function () {
+            filter = $(this).val();
+            $tableCompany.draw();
+        });
+    }(jQuery));
+</script>
+</body>
+</html>

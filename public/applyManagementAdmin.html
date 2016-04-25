@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        if (window.location.protocol == 'file:') {
+            window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+        }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">管理员1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="companyManagementAdmin.html">破产企业管理</a></li>
+                <li class="active"><a href="chooseCompanyAdmin.html">债权申请管理 <span
+                        class="sr-only">(current)</span></a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">债权申请管理</h1>
+            <div class="header">
+                <span>e租宝</span>
+            </div>
+            <div class="table-responsive">
+                <table id='tableApply' class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>债权人（申报人）</th>
+                        <th>申请状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>阿三</td>
+                        <td id="tdUnAuthority">申请中,帐号未验证授权</td>
+                        <td><a id="labelAuthority" href="#" class="label label-success">授权验证</a></td>
+                    </tr>
+                    <tr>
+                        <td>阿三</td>
+                        <td>申请中,帐号已验证授权</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>中国电信</td>
+                        <td>已确认申请,等待公司审核</td>
+                        <td><a href="processv1.pdf" class="label label-success" target="_blank">查看债权申报表</a></td>
+                    </tr>
+                    <tr>
+                        <td>中国联通</td>
+                        <td>已确认申请,等待会计师审核</td>
+                        <td><a href="processv1.pdf" class="label label-success" target="_blank">查看债权申报表</a></td>
+                    </tr>
+                    <tr>
+                        <td>中国石油</td>
+                        <td>等待审核意见</td>
+                        <td><a href="processv1.pdf" class="label label-success" target="_blank">查看债权申报表</a>
+                            <a href="verifyAdmin.html" class="label label-success">填写审核意见</a></td>
+                    </tr>
+                    <tr>
+                        <td>中国石化</td>
+                        <td id="tdGroup">等待债权人定性</td>
+                        <td><a id='labelGroup' href="#" class="label label-success">债权人定性</a></td>
+                    </tr>
+                    <tr>
+                        <td>中国石化</td>
+                        <td>已完成</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalGroup" role="dialog" aria-labelledby="modalGroupLabel">
+    <div class="modal-dialog  modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalGroupLabel">债权人定性</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="sr-only control-label" for="radioGroup1">债权人定性</label>
+                        <div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radioGroup" id="radioGroup1" value="1" checked>
+                                    群体1
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radioGroup" id="radioGroup2" value="2">
+                                    群体2
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radioGroup" id="radioGroup3" value="3">
+                                    群体3
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radioGroup" id="radioGroup4" value="4">
+                                    群体4
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnCommitGroup">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(function ($) {
+        $('#tableApply').DataTable({searching: false, lengthChange: false, info: false, ordering: false});
+        $('#labelAuthority').click(function () {
+            $('#tdUnAuthority').text('申请中,帐号已验证授权');
+            $(this).remove();
+            return false;
+        });
+        $('#labelGroup').click(function () {
+            $('#modalGroup').modal('show');
+            return false;
+        });
+        $('#btnCommitGroup').click(function () {
+            $('#labelGroup').remove();
+            $('#tdGroup').text('已完成');
+            $('#modalGroup').modal('hide');
+        })
+    }(jQuery));
+</script>
+</body>
+</html>

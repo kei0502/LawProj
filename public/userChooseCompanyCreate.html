@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        if (window.location.protocol == 'file:') {
+            window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+        }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="username" href="#">用户1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="userIndex.html">首页</a></li>
+                <li class="active"><a href="userChooseCompany.html?type=1">添加债权申请表</a></li>
+                <li><a href="userChooseCompany.html">查看债权申请表</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">添加债券申请表</h1>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="header">
+                    <span>选择债务公司</span>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <ul class="company-list company-list-create">
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">e租宝</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                        <li class="col-sm-4 col-md-3">
+                            <a class="company-name" href="userFormCreate.html">芝麻金融</a>
+                            <span class="date">2016-02-21</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]);
+        return null; //返回参数值
+    }
+    $('.company-preview').on('click',function(){
+       window.location.href='userFormCreate.html?type=preview';
+    });
+    $('.company-edit').on('click',function(){
+        window.location.href='userFormCreate.html?type=edit';
+    });
+    $('.company-vote').on('click',function(){
+        window.location.href='userFormCreate.html?type=edit';
+    });
+    $(function () {
+        var type = getUrlParam('type');
+        if (type == 1 || type == 2) {
+            $('.page-header').html($('.nav-sidebar li').eq(type).addClass('active').find('a').html());
+            if (type == 1)
+                $('.company-list li a').attr('href', 'userFormCreate.html');
+            else
+                $('.company-list li a').attr('href', 'userFormManage.html');
+        }
+    })
+</script>
+</body>
+</html>

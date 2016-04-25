@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        if (window.location.protocol == 'file:') {
+            window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+        }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="username" href="#">用户1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="userIndex.html">首页</a></li>
+                <li><a href="userChooseCompanyCreate.html">添加债权申请表</a></li>
+                <li class="active"><a href="userChooseCompany.html">查看债权申请表</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">投票</h1>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="header">
+                    <span>e租宝破产清算案第一次债权人会议表决票</span>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <ul class="vote-list">
+                        <li class="col-sm-12 col-md-12 text-center">
+                            本债权人已阅<a href="processv1.pdf">《A方案》</a>，表决意见如下：
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="1">同意
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="0">不同意
+                                </label>
+                            </div>
+                        </li>
+                        <li class="col-sm-12 col-md-12 text-center">
+                            本债权人已阅<a href="processv1.pdf">《B报告》</a>，表决意见如下：
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="1">同意
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="0">不同意
+                                </label>
+                            </div>
+                        </li>
+                        <li class="col-sm-12 col-md-12 text-center">
+                            本债权人已阅<a href="processv1.pdf">《C决议》</a>，表决意见如下：
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="1">同意
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="voteInput" value="0">不同意
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-12 text-center" style="margin-top: 30px;">
+                    <button class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+
+    })
+</script>
+</body>
+</html>

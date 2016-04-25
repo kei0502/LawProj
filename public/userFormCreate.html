@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>法务原型</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script type="text/javascript">
+    if (window.location.protocol == 'file:') {
+        window.alert('ERROR: Bootstrap\'s responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.')
+    }
+    </script><![endif]-->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">法务原型</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="username" href="#">用户1</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="userIndex.html">首页</a></li>
+                <li class="active"><a href="userChooseCompanyCreate.html">添加债权申请表</a></li>
+                <li><a href="userChooseCompany.html">查看债权申请表</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">添加债权申请表</h1>
+            <div class="col-sm-12 col-md-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="creditorInput" class="col-sm-3 control-label">债权人</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="creditorInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="representativeInput" class="col-sm-3 control-label">法定代表人</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="representativeInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="representativeMobileInput" class="col-sm-3 control-label">法定代表人联系电话</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="representativeMobileInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agentInput1" class="col-sm-3 control-label">代理人</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="agentInput1">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" id="addAgentButton">新增代理人</button>
+                        </div>
+                    </div>
+                    <div class="form-group" id="agentInput2Area" style="display: none;">
+                        <label for="agentInput2" class="col-sm-3 control-label">代理人2</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="agentInput2">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" id="removeAgentButton">移除代理人</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agentMobileInput" class="col-sm-3 control-label">联系电话</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="agentMobileInput">
+                        </div>
+                        <label for="agentFaxInput" class="col-sm-2 control-label">传真</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="agentFaxInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agentCodeInput" class="col-sm-3 control-label">邮政编码</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="agentCodeInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agentAddressInput" class="col-sm-3 control-label">地址</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="agentAddressInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reasonInput" class="col-sm-3 control-label">债权形成原因</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="reasonInput"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-3" id="reasonArea">
+                            必要时可上传《债权申报书》<input type="file" id="reasonFile" style="display: inline-block;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">债权有无担保</label>
+                        <div class="col-sm-8">
+                            <label class="radio-inline">
+                                <input type="radio" name="guaranteeInput" value="0" checked>无
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="guaranteeInput" value="1">有
+                            </label>
+                        </div>
+                    </div>
+                    <div id="guaranteeArea" class="panel panel-default col-sm-10 col-sm-offset-1" style="display: none;">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="guaranteeNameInput" class="col-sm-3 control-label">担保人名称</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="guaranteeNameInput">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="guaranteeNumberInput" class="col-sm-3 control-label">担保人金额</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="guaranteeNumberInput">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">担保形式</label>
+                                <div class="col-sm-8">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="guaranteeTypeInput" value="1">保证
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="guaranteeTypeInput" value="2">抵押
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="guaranteeTypeInput" value="3">质押
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">有无判决、裁定或仲裁裁决</label>
+                        <div class="col-sm-8">
+                            <label class="radio-inline">
+                                <input type="radio" name="judgeInput" value="0" checked>无
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="judgeInput" value="1">有
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">有无申请执行及裁定</label>
+                        <div class="col-sm-8">
+                            <label class="radio-inline">
+                                <input type="radio" name="ruleInput" value="0" checked>无
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="ruleInput" value="1">有
+                            </label>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">申报债权金额</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="moneyTypeInput" class="col-sm-3 control-label">币种</label>
+                        <div class="col-sm-3">
+                            <select id="moneyTypeInput" class="form-control">
+                                <option value="CNY">人民币</option>
+                                <option value="USD">美元-汇率6.5114</option>
+                            </select>
+                        </div>
+                        <label for="moneyTotalInput" class="col-sm-2 control-label">总金额</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="moneyTotalInput" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="principalInput" class="col-sm-3 control-label">本金</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="principalInput">
+                        </div>
+                        <label for="interestShow" class="col-sm-2 control-label">利息</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="interestShow">
+                        </div>
+                    </div>
+                    <div id="judgeArea" style="display: none;" class="form-group">
+                        <label for="principalInput" class="col-sm-3 control-label">诉讼/保全/执行费：</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="judgeNumberInput">
+                        </div>
+                        <label for="judgeFile" class="col-sm-2 control-label">必须上传凭证</label>
+                        <div class="col-sm-3">
+                            <input id="judgeFile" type="file" style="display: inline-block;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="moreInput" class="col-sm-3 control-label">其它</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="moreInput">
+                        </div>
+                    </div>
+                    <hr/>
+                    <div id="fileArea">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">添加附件</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="moreInput" class="col-sm-3 control-label">上传附件</label>
+                            <input type="file" class="col-sm-8" id="fileInput">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">附件名</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="fileNameInput">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">附件类型</label>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" name="fileTypeInput" value="0" checked>申报书
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="fileTypeInput" value="1">证明材料
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="fileTypeInput" value="2">其他
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-offset-3 col-sm-8 control-label" style="text-align: left;">同一类附件请打包上传</label>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-1 col-sm-offset-5">
+                                <button class="btn btn-primary" id="addFileButton">添加</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">附件列表</label>
+                        <ul class="col-sm-8 file-list">
+                            <li>附件1.pdf<a href="processv1.pdf">预览</a><a class="file-remove" href="#">移除</a></li>
+                            <li>附件2.pdf<a href="processv1.pdf">预览</a><a class="file-remove" href="#">移除</a></li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">债券申请表备注名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="commentNameInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-5 col-sm-5">
+                            <button type="submit" id="submitButton" class="btn btn-primary">确定</button>
+                            <a href="userFormCreate.html?type=edit" id="editButton" class="btn btn-primary">编辑</a>
+                            <button type="button" id="printButton" class="btn btn-primary">打印</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="interestModal" tabindex="-1" role="dialog" aria-labelledby="interestModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="interestModalLabel">利息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="principalShow" class="col-sm-3 control-label">本金</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="principalShow" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">计算方法</label>
+                        <div class="col-sm-7">
+                            <!--<select class="form-control">-->
+                                <!--<option value="1">百元基数计息法</option>-->
+                                <!--<option value="2">积数计息法</option>-->
+                                <!--<option value="3">利余</option>-->
+                                <!--<option value="4">其他</option>-->
+                            <!--</select>-->
+                            <label class="radio-inline">
+                                <input type="radio" name="interestTypeInput" value="1">百元基数
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="interestTypeInput" value="2">积数
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="interestTypeInput" value="3">利余
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="interestTypeInput" value="4">其他
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="startDateInput">起始日期</label>
+                        <div class="col-sm-7">
+                            <input id="startDateInput" type="text" class="form-control"
+                                   data-date-format="yyyy-mm-dd" placeholder="起始时间"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="endDateInput">截止日期</label>
+                        <div class="col-sm-7">
+                            <input id="endDateInput" type="text" class="form-control" disabled="disabled"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="interestInput" class="col-sm-3 control-label">利息</label>
+                        <div class="col-sm-7">
+                            <label class="control-label">利息计算公式或分段显示利息</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-7">
+                            <input type="text" class="form-control" id="interestInput" disabled>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="interestButton">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]);
+        return null; //返回参数值
+    }
+    $(function(){
+        var dtpOption = {autoclose: true, todayBtn: true, todayHighlight: true, minView:2, language: 'zh-CN'};
+        $('#startDateInput').datetimepicker(dtpOption);
+        var type=getUrlParam('type');
+        if(type!=null){
+            $('.nav-sidebar li').eq(1).removeClass('active');
+            $('.nav-sidebar li').eq(2).addClass('active');
+            //假数据
+            $('#creditorInput').val('张三');
+            $('#representativeInput').val('李四');
+            $('#representativeMobileInput').val('13333333333');
+            $('#agentInput1').val('张三');
+            $('#agentMobileInput').val('1333333333');
+            $('#agentFaxInput').val('12345678');
+            $('#agentCodeInput').val('200240');
+            $('#agentAddressInput').val('上海市闵行区东川路800号');
+            $('#reasonInput').val('不知道');
+            $('#moneyTypeInput').val('CNY');
+            $('#moneyTotalInput').val('壹拾贰万叁仟圆')
+            $('#principalInput').val('120000.00');
+            $('#interestShow').val('3000.00');
+            if(type=='preview'){
+                $('.page-header').html('查看债权申请表');
+                $('#addAgentButton').hide();
+                $('#removeAgentButton').hide();
+                $('.main form input').attr('disabled','disabled');
+                $('.main form textarea').attr('disabled','disabled');
+                $('.main form select').attr('disabled','disabled');
+                $('.main form #reasonArea').hide();
+                $('#submitButton').hide();
+                $('#editButton').show();
+                $('#printButton').show();
+                $('.file-list .file-remove').hide();
+                $('#fileArea').hide();
+            }
+            else{
+                $('.page-header').html('编辑债权申请表');
+                $('#submitButton').show();
+                $('#editButton').hide();
+                $('#printButton').hide();
+            }
+        }
+        else{
+            $('#submitButton').show();
+            $('#editButton').hide();
+            $('#printButton').hide();
+        }
+        $('#addAgentButton').click(function(e){
+            e.preventDefault();
+            $('#agentInput2Area').show();
+        });
+        $('#removeAgentButton').click(function(e){
+            e.preventDefault();
+            $('#agentInput2Area').hide();
+        });
+        $('input[name="guaranteeInput"]').change(function(){
+           if($(this).val()==1)
+               $('#guaranteeArea').show();
+           else
+               $('#guaranteeArea').hide();
+        });
+        $('input[name="judgeInput"]').change(function(){
+            if($(this).val()==1)
+                $('#judgeArea').show();
+            else
+                $('#judgeArea').hide();
+        });
+        $('#interestShow').focus(function(){
+            $('#principalShow').val($('#principalInput').val());
+            $('#interestInput').val('');
+            $('#interestModal').modal('show');
+        });
+        $('input[name="interestTypeInput"]').change(function(){
+           if($(this).val()!=4) {
+               $('#interestInput').attr('disabled', 'disabled');
+               $('#interestInput').val(parseFloat($('#principalShow').val())+parseFloat($(this).val()));
+           }
+           else {
+               $('#interestInput').removeAttr('disabled');
+               $('#interestInput').val('');
+           }
+        });
+        $('#interestButton').click(function(e){
+            e.preventDefault();
+            $('#interestShow').val($('#interestInput').val());
+            $('#interestModal').modal('hide');
+        });
+        $('#addFileButton').click(function(e){
+            e.preventDefault();
+
+        });
+    });
+</script>
+</body>
+</html>
