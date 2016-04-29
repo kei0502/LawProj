@@ -2,8 +2,10 @@
  * Base structure
  */
 * {
-    font-family: "Microsoft YaHei" !important;
-    outline:none; /* 去掉选中后的蓝边 */
+    font-family: "Microsoft YaHei", sans-serif;
+}
+:focus {
+    outline: none !important;
 }
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
