@@ -2,7 +2,7 @@
  * Base structure
  */
 * {
-    font-family: "Microsoft YaHei" !important;
+    font-family: "Microsoft YaHei";
     outline:none; /* 去掉选中后的蓝边 */
 }
 /* Move down content because we have a fixed navbar that is 50px tall */
