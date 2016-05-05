@@ -3,9 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/register', function (req, res, next) {
-    console.log(req.query);
     var username = decodeURIComponent(req.query.username);
-    console.log(username);
     User.find({username: username}, function (err, users) {
         if (err) next(err);
         if (users.length === 0) {

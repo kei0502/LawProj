@@ -4,7 +4,6 @@ var IndexContainer = React.createClass({
     render: function () {
         var data = this.props.data, contentHtml = ReactDOMServer.renderToString(
             <Index {...data}/>), initScript = 'main(' + JSON.stringify(data).replace(/script/g, 'scr"+"ipt') + ');';
-        console.log(data);
         return (<html lang="zh-CN">
         <Head title={this.props.title}/>
         <body>
