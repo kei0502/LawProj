@@ -34,6 +34,7 @@ router.post('/register', function (req, res, next) {
             user.save(function (err, user) {
                 if (err) next(err);
                 req.session.loggedIn = true;
+                user = {role: user.role, username: user.username, _id: user._id};
                 req.session.user = user;
                 res.send(user);
             });
@@ -53,8 +54,9 @@ router.get('/login', function (req, res, next) {
                 bcrypt.hash(user.password, salt, function (err, hash) {
                     if (err) next(err);
                     req.session.salt2 = salt;
+                    req.session.salt1 = user.salt;
                     req.session.hash = hash;
-                    req.session.user = user;
+                    req.session.user = {role: user.role, username: user.username, _id: user._id};
                     res.send({salt1: user.salt, salt2: salt});
                 });
             });
@@ -62,7 +64,8 @@ router.get('/login', function (req, res, next) {
     });
 });
 router.post('/login', function (req, res, next) {
-    var user = req.session.user, clientSalt1 = req.body.salt1, serverSalt1 = user.salt, clientSalt2 = req.body.salt2, serverSalt2 = req.session.salt2, clientUsername = req.body.username, serverUsername = user.username, clientHash = req.body.hash, serverHash = req.session.hash;
+    var user = req.session.user, clientSalt1 = req.body.salt1, serverSalt1 = req.session.salt1, clientSalt2 = req.body.salt2, serverSalt2 = req.session.salt2, clientUsername = req.body.username, serverUsername = user.username, clientHash = req.body.hash, serverHash = req.session.hash;
+    delete req.session.salt1;
     delete req.session.salt2;
     delete req.session.hash;
     if (!serverSalt1 || !serverSalt2 || clientSalt1 !== serverSalt1 || clientSalt2 !== serverSalt2 || !serverUsername || !serverHash) {
