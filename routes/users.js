@@ -1,7 +1,6 @@
 var express = require('express'), bcrypt = require('bcrypt'), User = require('../models/User').model();
 var router = express.Router();
 
-/* GET users listing. */
 router.get('/register', function (req, res, next) {
     var username = decodeURIComponent(req.query.username);
     User.find({username: username}, function (err, users) {

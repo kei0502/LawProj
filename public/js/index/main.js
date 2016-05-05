@@ -7,7 +7,15 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
     LoginModal = require('../modals/login.jsx'),
     RegisterModal = require('../modals/register.jsx'),
     VisitorNavbar = require('../navbars/visitor.jsx'),
-    CreditorNavbar = require('../navbars/creditor.jsx');
+    CreditorNavbar = require('../navbars/creditor.jsx'),
+    AdminNavbar = require('../navbars/admin.jsx'),
+    CompanyNavbar = require('../navbars/company.jsx'),
+    AccountNavbar = require('../navbars/accountant.jsx'),
+    VisitorSidebar = require('../sidebars/visitor.jsx'),
+    CreditorSidebar = require('../sidebars/creditor.jsx'),
+    AdminSidebar = require('../sidebars/admin.jsx'),
+    CompanySidebar = require('../sidebars/company.jsx'),
+    AccountantSidebar = require('../sidebars/accountant.jsx');
 var Index = React.createClass({
     displayName: 'Index',
 
@@ -16,18 +24,32 @@ var Index = React.createClass({
     }, getInitialState: function getInitialState() {
         return { role: this.props.user.role, name: this.props.user.username };
     }, render: function render() {
-        var navbar;
+        var navbar, sidebar;
         switch (this.state.role) {
             case 0:
                 navbar = React.createElement(VisitorNavbar, { login: this.loginStart, register: this.registerStart });
+                sidebar = React.createElement(VisitorSidebar, null);
                 break;
             case 1:
                 navbar = React.createElement(CreditorNavbar, { name: this.state.name });
+                sidebar = React.createElement(CreditorSidebar, null);
+                break;
+            case 2:
+                navbar = React.createElement(AdminNavbar, { name: this.state.name });
+                sidebar = React.createElement(AdminSidebar, null);
+                break;
+            case 3:
+                navbar = React.createElement(CompanyNavbar, { name: this.state.name });
+                sidebar = React.createElement(CompanySidebar, null);
+                break;
+            case 4:
+                navbar = React.createElement(AccountNavbar, { name: this.state.name });
+                sidebar = React.createElement(AccountantSidebar, null);
                 break;
         }
         return React.createElement(
             DefaultLayout,
-            { navbar: navbar },
+            { navbar: navbar, sidebar: sidebar },
             React.createElement(LoginModal, { confirm: this.loginConfirm, ref: 'loginModal' }),
             React.createElement(RegisterModal, { confirm: this.registerConfirm, ref: 'registerModal' })
         );
@@ -35,18 +57,18 @@ var Index = React.createClass({
         e.preventDefault();
         this.refs.loginModal.show();
     }, loginConfirm: function loginConfirm(user) {
-        this.setState({ role: 1, name: user.username });
+        this.setState({ role: user.role, name: user.username });
     }, registerStart: function registerStart(e) {
         e.preventDefault();
         this.refs.registerModal.show();
     }, registerConfirm: function registerConfirm(user) {
-        this.setState({ role: 1, name: user.username });
+        this.setState({ role: user.role, name: user.username });
     }
 });
 module.exports = Index;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../layouts/default.jsx":3,"../modals/login.jsx":5,"../modals/register.jsx":6,"../navbars/creditor.jsx":7,"../navbars/visitor.jsx":8}],2:[function(require,module,exports){
+},{"../layouts/default.jsx":3,"../modals/login.jsx":5,"../modals/register.jsx":6,"../navbars/accountant.jsx":7,"../navbars/admin.jsx":8,"../navbars/company.jsx":9,"../navbars/creditor.jsx":10,"../navbars/visitor.jsx":11,"../sidebars/accountant.jsx":12,"../sidebars/admin.jsx":13,"../sidebars/company.jsx":14,"../sidebars/creditor.jsx":15,"../sidebars/visitor.jsx":16}],2:[function(require,module,exports){
 (function (global){
 /**
  * Created by gyz on 16/5/4.
@@ -484,6 +506,87 @@ module.exports = RegisterModal;
 "use strict";
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var AccountantNavbar = React.createClass({
+    displayName: "AccountantNavbar",
+
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav navbar-nav navbar-right" },
+            React.createElement(
+                "li",
+                null,
+                React.createElement(
+                    "a",
+                    { className: "username", href: "#" },
+                    this.props.name
+                )
+            )
+        );
+    }
+});
+module.exports = AccountantNavbar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],8:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var AdminNavbar = React.createClass({
+    displayName: "AdminNavbar",
+
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav navbar-nav navbar-right" },
+            React.createElement(
+                "li",
+                null,
+                React.createElement(
+                    "a",
+                    { className: "username", href: "#" },
+                    this.props.name
+                )
+            )
+        );
+    }
+});
+module.exports = AdminNavbar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],9:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var CompanyNavbar = React.createClass({
+    displayName: "CompanyNavbar",
+
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav navbar-nav navbar-right" },
+            React.createElement(
+                "li",
+                null,
+                React.createElement(
+                    "a",
+                    { className: "username", href: "#" },
+                    this.props.name
+                )
+            )
+        );
+    }
+});
+module.exports = CompanyNavbar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],10:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var CreditorNavbar = React.createClass({
     displayName: "CreditorNavbar",
 
@@ -506,7 +609,7 @@ var CreditorNavbar = React.createClass({
 module.exports = CreditorNavbar;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -540,6 +643,183 @@ var VisitorNavbar = React.createClass({
     }
 });
 module.exports = VisitorNavbar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],12:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var AccountantSidebar = React.createClass({
+    displayName: "AccountantSidebar",
+
+    getDefaultProps: function getDefaultProps() {
+        return { selected: 1 };
+    },
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav nav-sidebar" },
+            React.createElement(
+                "li",
+                { className: this.props.selected === 1 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "债权申请审核"
+                )
+            )
+        );
+    }
+});
+module.exports = AccountantSidebar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],13:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var AdminSidebar = React.createClass({
+    displayName: "AdminSidebar",
+
+    getDefaultProps: function getDefaultProps() {
+        return { selected: 1 };
+    },
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav nav-sidebar" },
+            React.createElement(
+                "li",
+                { className: this.props.selected === 1 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "破产企业管理"
+                )
+            ),
+            React.createElement(
+                "li",
+                { className: this.props.selected === 2 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "债权申请管理"
+                )
+            )
+        );
+    }
+});
+module.exports = AdminSidebar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],14:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var CompanySidebar = React.createClass({
+    displayName: "CompanySidebar",
+
+    getDefaultProps: function getDefaultProps() {
+        return { selected: 1 };
+    },
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav nav-sidebar" },
+            React.createElement(
+                "li",
+                { className: this.props.selected === 1 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "#" },
+                    "债权申请审核"
+                )
+            )
+        );
+    }
+});
+module.exports = CompanySidebar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],15:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var CreditorSidebar = React.createClass({
+    displayName: "CreditorSidebar",
+
+    getDefaultProps: function getDefaultProps() {
+        return { selected: 0 };
+    },
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav nav-sidebar" },
+            React.createElement(
+                "li",
+                { className: this.props.selected === 0 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "/" },
+                    "首页"
+                )
+            ),
+            React.createElement(
+                "li",
+                { className: this.props.selected === 1 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "/claims/add" },
+                    "添加债权申请表"
+                )
+            ),
+            React.createElement(
+                "li",
+                { className: this.props.selected === 2 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "/claims/list" },
+                    "查看债权申请表"
+                )
+            )
+        );
+    }
+});
+module.exports = CreditorSidebar;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],16:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var VisitorSidebar = React.createClass({
+    displayName: "VisitorSidebar",
+
+    getDefaultProps: function getDefaultProps() {
+        return { selected: 0 };
+    },
+    render: function render() {
+        return React.createElement(
+            "ul",
+            { className: "nav nav-sidebar" },
+            React.createElement(
+                "li",
+                { className: this.props.selected === 0 ? "active" : "" },
+                React.createElement(
+                    "a",
+                    { href: "/" },
+                    "首页"
+                )
+            )
+        );
+    }
+});
+module.exports = VisitorSidebar;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[2])(2)
