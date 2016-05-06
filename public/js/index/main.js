@@ -36,15 +36,15 @@ var Index = React.createClass({
                 sidebar = React.createElement(CreditorSidebar, null);
                 break;
             case 2:
-                navbar = React.createElement(AdminNavbar, { name: this.state.name });
+                navbar = React.createElement(AdminNavbar, { name: this.state.name, logout: this.logout });
                 sidebar = React.createElement(AdminSidebar, null);
                 break;
             case 3:
-                navbar = React.createElement(CompanyNavbar, { name: this.state.name });
+                navbar = React.createElement(CompanyNavbar, { name: this.state.name, logout: this.logout });
                 sidebar = React.createElement(CompanySidebar, null);
                 break;
             case 4:
-                navbar = React.createElement(AccountNavbar, { name: this.state.name });
+                navbar = React.createElement(AccountNavbar, { name: this.state.name, logout: this.logout });
                 sidebar = React.createElement(AccountantSidebar, null);
                 break;
         }
@@ -517,20 +517,43 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
 var AccountantNavbar = React.createClass({
     displayName: "AccountantNavbar",
 
-    render: function render() {
+    getInitialState: function getInitialState() {
+        return { expanded: false };
+    }, render: function render() {
         return React.createElement(
             "ul",
             { className: "nav navbar-nav navbar-right" },
             React.createElement(
                 "li",
-                null,
+                { className: this.state.expanded ? "dropdown open" : "dropdown" },
                 React.createElement(
                     "a",
-                    { className: "username", href: "#" },
+                    { className: "dropdown-toggle", role: "button", "aria-haspopup": "true",
+                        "aria-expanded": this.state.expanded, href: "#", onClick: this.expand },
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-user" }),
+                    " ",
                     this.props.name
+                ),
+                React.createElement(
+                    "ul",
+                    { className: "dropdown-menu" },
+                    React.createElement(
+                        "li",
+                        null,
+                        React.createElement(
+                            "a",
+                            { href: "#", onClick: this.props.logout },
+                            React.createElement("span", { className: "glyphicon glyphicon-log-out" }),
+                            " 退出"
+                        )
+                    )
                 )
             )
         );
+    }, expand: function expand(e) {
+        e.preventDefault();
+        this.setState({ expanded: !this.state.expanded });
     }
 });
 module.exports = AccountantNavbar;
@@ -544,20 +567,43 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
 var AdminNavbar = React.createClass({
     displayName: "AdminNavbar",
 
-    render: function render() {
+    getInitialState: function getInitialState() {
+        return { expanded: false };
+    }, render: function render() {
         return React.createElement(
             "ul",
             { className: "nav navbar-nav navbar-right" },
             React.createElement(
                 "li",
-                null,
+                { className: this.state.expanded ? "dropdown open" : "dropdown" },
                 React.createElement(
                     "a",
-                    { className: "username", href: "#" },
+                    { className: "dropdown-toggle", role: "button", "aria-haspopup": "true",
+                        "aria-expanded": this.state.expanded, href: "#", onClick: this.expand },
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-user" }),
+                    " ",
                     this.props.name
+                ),
+                React.createElement(
+                    "ul",
+                    { className: "dropdown-menu" },
+                    React.createElement(
+                        "li",
+                        null,
+                        React.createElement(
+                            "a",
+                            { href: "#", onClick: this.props.logout },
+                            React.createElement("span", { className: "glyphicon glyphicon-log-out" }),
+                            " 退出"
+                        )
+                    )
                 )
             )
         );
+    }, expand: function expand(e) {
+        e.preventDefault();
+        this.setState({ expanded: !this.state.expanded });
     }
 });
 module.exports = AdminNavbar;
@@ -571,20 +617,43 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
 var CompanyNavbar = React.createClass({
     displayName: "CompanyNavbar",
 
-    render: function render() {
+    getInitialState: function getInitialState() {
+        return { expanded: false };
+    }, render: function render() {
         return React.createElement(
             "ul",
             { className: "nav navbar-nav navbar-right" },
             React.createElement(
                 "li",
-                null,
+                { className: this.state.expanded ? "dropdown open" : "dropdown" },
                 React.createElement(
                     "a",
-                    { className: "username", href: "#" },
+                    { className: "dropdown-toggle", role: "button", "aria-haspopup": "true",
+                        "aria-expanded": this.state.expanded, href: "#", onClick: this.expand },
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-user" }),
+                    " ",
                     this.props.name
+                ),
+                React.createElement(
+                    "ul",
+                    { className: "dropdown-menu" },
+                    React.createElement(
+                        "li",
+                        null,
+                        React.createElement(
+                            "a",
+                            { href: "#", onClick: this.props.logout },
+                            React.createElement("span", { className: "glyphicon glyphicon-log-out" }),
+                            " 退出"
+                        )
+                    )
                 )
             )
         );
+    }, expand: function expand(e) {
+        e.preventDefault();
+        this.setState({ expanded: !this.state.expanded });
     }
 });
 module.exports = CompanyNavbar;

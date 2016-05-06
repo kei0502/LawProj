@@ -16,15 +16,15 @@ var Index = React.createClass({
                 sidebar = (<CreditorSidebar/>);
                 break;
             case 2:
-                navbar = (<AdminNavbar name={this.state.name}/>);
+                navbar = (<AdminNavbar name={this.state.name} logout={this.logout}/>);
                 sidebar = (<AdminSidebar/>);
                 break;
             case 3:
-                navbar = (<CompanyNavbar name={this.state.name}/>);
+                navbar = (<CompanyNavbar name={this.state.name} logout={this.logout}/>);
                 sidebar = (<CompanySidebar/>);
                 break;
             case 4:
-                navbar = (<AccountNavbar name={this.state.name}/>);
+                navbar = (<AccountNavbar name={this.state.name} logout={this.logout}/>);
                 sidebar = (<AccountantSidebar/>);
                 break;
         }
