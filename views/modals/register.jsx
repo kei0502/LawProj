@@ -42,13 +42,13 @@ var RegisterModal = React.createClass({
         e.preventDefault();
         var username = this.state.username, password = this.state.password, repeat = this.state.repeat, salt = this.state.salt;
         if (username.length < 6) {
-            this.setState({message: "用户名长度至少6位"});
+            this.setState({password: "", repeat: "", message: "用户名长度至少6位"});
         } else if (password.length < 6) {
-            this.setState({message: "密码长度至少6位"});
+            this.setState({password: "", repeat: "", message: "密码长度至少6位"});
         } else if (password !== repeat) {
-            this.setState({message: "密码确认不一致"});
+            this.setState({password: "", repeat: "", message: "密码确认不一致"});
         } else if (!salt) {
-            this.setState({message: "用户名已存在"});
+            this.setState({password: "", repeat: "", message: "用户名已存在"});
         } else {
             bcrypt.hash(password, salt, function (err, hash) {
                 if (err) {
@@ -62,10 +62,11 @@ var RegisterModal = React.createClass({
                                 this.props.confirm(data);
                             }
                             this.hide();
+                            this.setState({username: "", password: "", repeat: "", message: "", salt: ""});
                         }.bind(this),
                         error: function (xhr) {
                             if (xhr.status) {
-                                this.setState({message: xhr.responseJSON.error});
+                                this.setState({password: "", repeat: "", message: xhr.responseJSON.error});
                             }
                         }.bind(this)
                     });

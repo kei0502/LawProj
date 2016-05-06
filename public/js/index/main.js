@@ -3,6 +3,7 @@
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
+    $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null),
     DefaultLayout = require('../layouts/default.jsx'),
     LoginModal = require('../modals/login.jsx'),
     RegisterModal = require('../modals/register.jsx'),
@@ -31,7 +32,7 @@ var Index = React.createClass({
                 sidebar = React.createElement(VisitorSidebar, null);
                 break;
             case 1:
-                navbar = React.createElement(CreditorNavbar, { name: this.state.name });
+                navbar = React.createElement(CreditorNavbar, { name: this.state.name, logout: this.logout });
                 sidebar = React.createElement(CreditorSidebar, null);
                 break;
             case 2:
@@ -63,6 +64,11 @@ var Index = React.createClass({
         this.refs.registerModal.show();
     }, registerConfirm: function registerConfirm(user) {
         this.setState({ role: user.role, name: user.username });
+    }, logout: function logout(e) {
+        e.preventDefault();
+        $.get("/users/logout", (function () {
+            this.setState({ role: 0, name: undefined });
+        }).bind(this));
     }
 });
 module.exports = Index;
@@ -322,6 +328,7 @@ var LoginModal = React.createClass({
                                                 this.props.confirm(data);
                                             }
                                             this.hide();
+                                            this.setState({ username: "", password: "", message: "" });
                                         }).bind(this),
                                         error: (function (xhr) {
                                             if (xhr.statusCode) {
@@ -439,13 +446,13 @@ var RegisterModal = React.createClass({
             repeat = this.state.repeat,
             salt = this.state.salt;
         if (username.length < 6) {
-            this.setState({ message: "用户名长度至少6位" });
+            this.setState({ password: "", repeat: "", message: "用户名长度至少6位" });
         } else if (password.length < 6) {
-            this.setState({ message: "密码长度至少6位" });
+            this.setState({ password: "", repeat: "", message: "密码长度至少6位" });
         } else if (password !== repeat) {
-            this.setState({ message: "密码确认不一致" });
+            this.setState({ password: "", repeat: "", message: "密码确认不一致" });
         } else if (!salt) {
-            this.setState({ message: "用户名已存在" });
+            this.setState({ password: "", repeat: "", message: "用户名已存在" });
         } else {
             bcrypt.hash(password, salt, (function (err, hash) {
                 if (err) {
@@ -459,10 +466,11 @@ var RegisterModal = React.createClass({
                                 this.props.confirm(data);
                             }
                             this.hide();
+                            this.setState({ username: "", password: "", repeat: "", message: "", salt: "" });
                         }).bind(this),
                         error: (function (xhr) {
                             if (xhr.status) {
-                                this.setState({ message: xhr.responseJSON.error });
+                                this.setState({ password: "", repeat: "", message: xhr.responseJSON.error });
                             }
                         }).bind(this)
                     });
@@ -590,20 +598,43 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
 var CreditorNavbar = React.createClass({
     displayName: "CreditorNavbar",
 
-    render: function render() {
+    getInitialState: function getInitialState() {
+        return { expanded: false };
+    }, render: function render() {
         return React.createElement(
             "ul",
             { className: "nav navbar-nav navbar-right" },
             React.createElement(
                 "li",
-                null,
+                { className: this.state.expanded ? "dropdown open" : "dropdown" },
                 React.createElement(
                     "a",
-                    { className: "username", href: "#" },
+                    { className: "dropdown-toggle", role: "button", "aria-haspopup": "true",
+                        "aria-expanded": this.state.expanded, href: "#", onClick: this.expand },
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-user" }),
+                    " ",
                     this.props.name
+                ),
+                React.createElement(
+                    "ul",
+                    { className: "dropdown-menu" },
+                    React.createElement(
+                        "li",
+                        null,
+                        React.createElement(
+                            "a",
+                            { href: "#", onClick: this.props.logout },
+                            React.createElement("span", { className: "glyphicon glyphicon-log-out" }),
+                            " 退出"
+                        )
+                    )
                 )
             )
         );
+    }, expand: function expand(e) {
+        e.preventDefault();
+        this.setState({ expanded: !this.state.expanded });
     }
 });
 module.exports = CreditorNavbar;
@@ -627,7 +658,9 @@ var VisitorNavbar = React.createClass({
                 React.createElement(
                     "a",
                     { href: "#", "data-toggle": "modal", onClick: this.props.login },
-                    "登录"
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-log-in" }),
+                    " 登录"
                 )
             ),
             React.createElement(
@@ -636,7 +669,9 @@ var VisitorNavbar = React.createClass({
                 React.createElement(
                     "a",
                     { href: "#", "data-toggle": "modal", onClick: this.props.register },
-                    "注册"
+                    React.createElement("span", {
+                        className: "glyphicon glyphicon-edit" }),
+                    " 注册"
                 )
             )
         );

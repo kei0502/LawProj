@@ -1,4 +1,4 @@
-var React = require('react'), DefaultLayout = require('../layouts/default.jsx'), LoginModal = require('../modals/login.jsx'), RegisterModal = require('../modals/register.jsx'), VisitorNavbar = require('../navbars/visitor.jsx'), CreditorNavbar = require('../navbars/creditor.jsx'), AdminNavbar = require('../navbars/admin.jsx'), CompanyNavbar = require('../navbars/company.jsx'), AccountNavbar = require('../navbars/accountant.jsx'), VisitorSidebar = require('../sidebars/visitor.jsx'), CreditorSidebar = require('../sidebars/creditor.jsx'), AdminSidebar = require('../sidebars/admin.jsx'), CompanySidebar = require('../sidebars/company.jsx'), AccountantSidebar = require('../sidebars/accountant.jsx');
+var React = require('react'), $ = require('jquery'), DefaultLayout = require('../layouts/default.jsx'), LoginModal = require('../modals/login.jsx'), RegisterModal = require('../modals/register.jsx'), VisitorNavbar = require('../navbars/visitor.jsx'), CreditorNavbar = require('../navbars/creditor.jsx'), AdminNavbar = require('../navbars/admin.jsx'), CompanyNavbar = require('../navbars/company.jsx'), AccountNavbar = require('../navbars/accountant.jsx'), VisitorSidebar = require('../sidebars/visitor.jsx'), CreditorSidebar = require('../sidebars/creditor.jsx'), AdminSidebar = require('../sidebars/admin.jsx'), CompanySidebar = require('../sidebars/company.jsx'), AccountantSidebar = require('../sidebars/accountant.jsx');
 var Index = React.createClass({
     getDefaultProps: function () {
         return {user: {role: 0}};
@@ -12,7 +12,7 @@ var Index = React.createClass({
                 sidebar = (<VisitorSidebar/>);
                 break;
             case 1:
-                navbar = (<CreditorNavbar name={this.state.name}/>);
+                navbar = (<CreditorNavbar name={this.state.name} logout={this.logout}/>);
                 sidebar = (<CreditorSidebar/>);
                 break;
             case 2:
@@ -42,6 +42,11 @@ var Index = React.createClass({
         this.refs.registerModal.show();
     }, registerConfirm: function (user) {
         this.setState({role: user.role, name: user.username});
+    }, logout: function (e) {
+        e.preventDefault();
+        $.get("/users/logout", function () {
+            this.setState({role: 0, name: undefined});
+        }.bind(this));
     }
 });
 module.exports = Index;

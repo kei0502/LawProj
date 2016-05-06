@@ -56,6 +56,7 @@ var LoginModal = React.createClass({
                                                 this.props.confirm(data);
                                             }
                                             this.hide();
+                                            this.setState({username: "", password: "", message: ""});
                                         }.bind(this),
                                         error: function (xhr) {
                                             if (xhr.statusCode) {
