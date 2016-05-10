@@ -10,7 +10,7 @@ var register = function () {
         create: Date,
         settlement: Date,
         expire: Date,
-        vote: Date,
+        vote: {type: Date, default: undefined},
         validator_company: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
         validator_accountant: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
         admin: {type: [Schema.Types.ObjectId], ref: 'User', default: []},

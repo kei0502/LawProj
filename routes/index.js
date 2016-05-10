@@ -17,7 +17,7 @@ router.get('/company/management', authentication.admin, function (req, res, next
                 create: moment(company.create).format("YYYY-MM-DD"),
                 settlement: moment(company.settlement).format("YYYY-MM-DD"),
                 expire: moment(company.expire).format("YYYY-MM-DD"),
-                vote: moment(company.vote).format("YYYY-MM-DD"),
+                vote: company.vote ? moment(company.vote).format("YYYY-MM-DD") : undefined,
                 validator_company: company.validator_company,
                 validator_accountant: company.validator_accountant
             }
