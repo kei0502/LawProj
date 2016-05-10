@@ -3128,7 +3128,7 @@
         fired,
     // End of the loop when firing
         firingLength,
-    // Index of currently firing callback (modified by remove if needed)
+    // View of currently firing callback (modified by remove if needed)
         firingIndex,
     // First callback to fire (used internally by add and fireWith)
         firingStart,

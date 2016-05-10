@@ -8,12 +8,22 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://202.120.40.73/law');
 var User = require('./models/User');
+var Exchange = require('./models/Exchange');
+var Currency = require('./models/Currency');
+var Claim = require('./models/Claim');
+var Company = require('./models/Company');
 User.register();
+Exchange.register();
+Currency.register();
+Claim.register();
+Company.register();
 // var redis = require('redis');
 // var RedisStore = require('connect-redis')(session);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var companies = require('./routes/companies');
+var currencies = require('./routes/currencies');
 
 var app = express();
 
@@ -43,6 +53,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/companies', companies);
+app.use('/currencies', currencies);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

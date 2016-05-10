@@ -59,6 +59,9 @@ var Index = React.createClass({
         this.refs.loginModal.show();
     }, loginConfirm: function loginConfirm(user) {
         this.setState({ role: user.role, name: user.username });
+        if (user.role == 2) {
+            location.href = "/company/management";
+        }
     }, registerStart: function registerStart(e) {
         e.preventDefault();
         this.refs.registerModal.show();
