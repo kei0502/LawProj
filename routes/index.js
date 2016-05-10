@@ -25,5 +25,15 @@ router.get('/company/management', authentication.admin, function (req, res, next
         res.render('company/management/container', {data: {user: req.session.user, companies: data}});
     });
 });
+router.get('/company/apply', authentication.creditor, function (req, res, next) {
+    Company.find({expire: {$lt: new Date()}}, 'name expire', function (err, companies) {
+        if (err) next(err);
+        console.log(companies);
+        var data = companies.map(function (company) {
+            return {_id: company._id, name: company.name, expire: moment(company.expire).format("YYYY-MM-DD")};
+        });
+        res.render('company/apply/container', {data: {user: req.session.user, companies: data}});
+    });
+});
 
 module.exports = router;

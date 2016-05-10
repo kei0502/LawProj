@@ -11,6 +11,7 @@ var authenticationGenerator = function (role) {
         next();
     }
 };
+exports.creditor = authenticationGenerator(1);
 exports.admin = authenticationGenerator(2);
 exports.company = authenticationGenerator(3);
 exports.accountant = authenticationGenerator(4);

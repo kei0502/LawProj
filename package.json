@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "browserify -t babelify --standalone main views/index/main.js -o public/js/index/main.js && browserify -t babelify --standalone main views/company/management/main.js -o public/js/company/management/main.js",
+    "prestart": "bin/prestart.sh",
     "start": "node ./bin/www"
   },
   "browserify": {

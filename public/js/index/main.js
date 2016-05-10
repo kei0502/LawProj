@@ -880,7 +880,7 @@ var CreditorSidebar = React.createClass({
                 { className: this.props.selected === 1 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "/claims/add" },
+                    { href: "/company/apply" },
                     "添加债权申请表"
                 )
             ),
