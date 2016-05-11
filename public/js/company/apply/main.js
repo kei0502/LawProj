@@ -122,7 +122,7 @@ var CompanyApplyView = React.createClass({
     displayName: 'CompanyApplyView',
 
     render: function render() {
-        var navbar = React.createElement(CreditorNavbar, { name: this.props.user.username, logout: this.logout }),
+        var navbar = React.createElement(CreditorNavbar, { name: this.props.user.name, logout: this.logout }),
             sidebar = React.createElement(CreditorSidebar, { selected: 1 }),
             body = React.createElement(CompanyApplyBody, { companies: this.props.companies });
         return React.createElement(DefaultLayout, { navbar: navbar, sidebar: sidebar, main: body });

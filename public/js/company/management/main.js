@@ -159,7 +159,7 @@ var CompanyManagementView = React.createClass({
     displayName: 'CompanyManagementView',
 
     render: function render() {
-        var navbar = React.createElement(AdminNavbar, { name: this.props.user.username, logout: this.logout }),
+        var navbar = React.createElement(AdminNavbar, { name: this.props.user.name, logout: this.logout }),
             sidebar = React.createElement(AdminSidebar, null),
             main = React.createElement(CompanyManagementBody, { addCompany: this.addCompanyStart, companies: this.props.companies, ref: 'body' });
         return React.createElement(

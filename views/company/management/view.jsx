@@ -1,7 +1,7 @@
 var React = require('react'), DefaultLayout = require('../../layouts/default.jsx'), AdminNavbar = require('../../navbars/admin.jsx'), AdminSidebar = require('../../sidebars/admin.jsx'), CompanyManagementBody = require('./body.jsx'), AddCompanyModal = require('../../modals/addCompany.jsx'), $ = require('jquery');
 var CompanyManagementView = React.createClass({
     render: function () {
-        var navbar = (<AdminNavbar name={this.props.user.username} logout={this.logout}/>), sidebar = (
+        var navbar = (<AdminNavbar name={this.props.user.name} logout={this.logout}/>), sidebar = (
             <AdminSidebar/>), main = (
             <CompanyManagementBody addCompany={this.addCompanyStart} companies={this.props.companies} ref="body"/>);
         return (<DefaultLayout navbar={navbar} sidebar={sidebar} main={main}>

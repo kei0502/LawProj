@@ -27,13 +27,14 @@ router.post('/register', function (req, res, next) {
         if (users.length === 0) {
             var user = new User();
             user.username = req.body.username;
+            user.name = req.body.name;
             user.password = req.body.password;
             user.salt = serverSalt;
             user.role = 1;
             user.save(function (err, user) {
                 if (err) next(err);
                 req.session.loggedIn = true;
-                user = {role: user.role, username: user.username, _id: user._id};
+                user = {role: user.role, name: user.name, username: user.username, _id: user._id};
                 req.session.user = user;
                 res.send(user);
             });
@@ -55,7 +56,7 @@ router.get('/login', function (req, res, next) {
                     req.session.salt2 = salt;
                     req.session.salt1 = user.salt;
                     req.session.hash = hash;
-                    req.session.user = {role: user.role, username: user.username, _id: user._id};
+                    req.session.user = {role: user.role, name: user.name, username: user.username, _id: user._id};
                     res.send({salt1: user.salt, salt2: salt});
                 });
             });

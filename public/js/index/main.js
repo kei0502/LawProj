@@ -23,7 +23,7 @@ var Index = React.createClass({
     getDefaultProps: function getDefaultProps() {
         return { user: { role: 0 } };
     }, getInitialState: function getInitialState() {
-        return { role: this.props.user.role, name: this.props.user.username };
+        return { role: this.props.user.role, name: this.props.user.name };
     }, render: function render() {
         var navbar, sidebar;
         switch (this.state.role) {
@@ -58,7 +58,7 @@ var Index = React.createClass({
         e.preventDefault();
         this.refs.loginModal.show();
     }, loginConfirm: function loginConfirm(user) {
-        this.setState({ role: user.role, name: user.username });
+        this.setState({ role: user.role, name: user.name });
         if (user.role == 2) {
             location.href = "/company/management";
         }
@@ -66,7 +66,7 @@ var Index = React.createClass({
         e.preventDefault();
         this.refs.registerModal.show();
     }, registerConfirm: function registerConfirm(user) {
-        this.setState({ role: user.role, name: user.username });
+        this.setState({ role: user.role, name: user.name });
     }, logout: function logout(e) {
         e.preventDefault();
         $.get("/users/logout", (function () {
@@ -371,7 +371,7 @@ var RegisterModal = React.createClass({
     displayName: 'RegisterModal',
 
     getInitialState: function getInitialState() {
-        return { username: "", password: "", repeat: "", message: "", salt: "" };
+        return { username: "", name: "", password: "", repeat: "", message: "", salt: "" };
     },
     render: function render() {
         return React.createElement(
@@ -394,6 +394,21 @@ var RegisterModal = React.createClass({
                         React.createElement('input', { type: 'text', className: 'form-control', id: 'newusernameInput', placeholder: '请输入用户名(长度至少6位以上)',
                             value: this.state.username, onChange: this.onUsernameChange,
                             onBlur: this.onUsernameBlur })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { htmlFor: 'newnameInput', className: 'col-sm-2 col-sm-offset-1 control-label' },
+                        '真实姓名'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement('input', { type: 'text', className: 'form-control', id: 'newnameInput', placeholder: '真实姓名',
+                            value: this.state.name, onChange: this.onNameChange })
                     )
                 ),
                 React.createElement(
@@ -445,11 +460,14 @@ var RegisterModal = React.createClass({
     }, confirm: function confirm(e) {
         e.preventDefault();
         var username = this.state.username,
+            name = this.state.name,
             password = this.state.password,
             repeat = this.state.repeat,
             salt = this.state.salt;
         if (username.length < 6) {
             this.setState({ password: "", repeat: "", message: "用户名长度至少6位" });
+        } else if (!name) {
+            this.setState({ password: "", repeat: "", message: "真实姓名不能为空" });
         } else if (password.length < 6) {
             this.setState({ password: "", repeat: "", message: "密码长度至少6位" });
         } else if (password !== repeat) {
@@ -463,13 +481,13 @@ var RegisterModal = React.createClass({
                 } else {
                     $.ajax("users/register", {
                         method: "POST",
-                        data: { username: username, password: hash, salt1: salt },
+                        data: { username: username, name: name, password: hash, salt1: salt },
                         success: (function (data) {
                             if (this.props.confirm) {
                                 this.props.confirm(data);
                             }
                             this.hide();
-                            this.setState({ username: "", password: "", repeat: "", message: "", salt: "" });
+                            this.setState({ username: "", name: "", password: "", repeat: "", message: "", salt: "" });
                         }).bind(this),
                         error: (function (xhr) {
                             if (xhr.status) {
@@ -483,6 +501,8 @@ var RegisterModal = React.createClass({
     }, onUsernameChange: function onUsernameChange(e) {
         var username = e.target.value;
         this.setState({ username: username, message: username.length < 6 ? "用户名长度至少6位" : "" });
+    }, onNameChange: function onNameChange(e) {
+        this.setState({ name: e.target.value });
     }, onUsernameBlur: function onUsernameBlur(e) {
         var username = e.target.value;
         if (username.length < 6) {

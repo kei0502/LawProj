@@ -1,7 +1,7 @@
 var React = require('react'), $ = require('jquery'), DefaultModal = require('./default.jsx'), bcrypt = require('bcrypt');
 var RegisterModal = React.createClass({
     getInitialState: function () {
-        return {username: "", password: "", repeat: "", message: "", salt: ""}
+        return {username: "", name: "", password: "", repeat: "", message: "", salt: ""}
     },
     render: function () {
         return (<DefaultModal name="register" title="注册" ref="modal" confirm={this.confirm}>
@@ -12,6 +12,13 @@ var RegisterModal = React.createClass({
                         <input type="text" className="form-control" id="newusernameInput" placeholder="请输入用户名(长度至少6位以上)"
                                value={this.state.username} onChange={this.onUsernameChange}
                                onBlur={this.onUsernameBlur}/>
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="newnameInput" className="col-sm-2 col-sm-offset-1 control-label">真实姓名</label>
+                    <div className="col-sm-7">
+                        <input type="text" className="form-control" id="newnameInput" placeholder="真实姓名"
+                               value={this.state.name} onChange={this.onNameChange}/>
                     </div>
                 </div>
                 <div className="form-group">
@@ -40,9 +47,11 @@ var RegisterModal = React.createClass({
         this.refs.modal.show();
     }, confirm: function (e) {
         e.preventDefault();
-        var username = this.state.username, password = this.state.password, repeat = this.state.repeat, salt = this.state.salt;
+        var username = this.state.username, name = this.state.name, password = this.state.password, repeat = this.state.repeat, salt = this.state.salt;
         if (username.length < 6) {
             this.setState({password: "", repeat: "", message: "用户名长度至少6位"});
+        } else if (!name) {
+            this.setState({password: "", repeat: "", message: "真实姓名不能为空"});
         } else if (password.length < 6) {
             this.setState({password: "", repeat: "", message: "密码长度至少6位"});
         } else if (password !== repeat) {
@@ -56,13 +65,13 @@ var RegisterModal = React.createClass({
                 } else {
                     $.ajax("users/register", {
                         method: "POST",
-                        data: {username: username, password: hash, salt1: salt},
+                        data: {username: username, name: name, password: hash, salt1: salt},
                         success: function (data) {
                             if (this.props.confirm) {
                                 this.props.confirm(data);
                             }
                             this.hide();
-                            this.setState({username: "", password: "", repeat: "", message: "", salt: ""});
+                            this.setState({username: "", name: "", password: "", repeat: "", message: "", salt: ""});
                         }.bind(this),
                         error: function (xhr) {
                             if (xhr.status) {
@@ -77,6 +86,8 @@ var RegisterModal = React.createClass({
     }, onUsernameChange: function (e) {
         var username = e.target.value;
         this.setState({username: username, message: username.length < 6 ? "用户名长度至少6位" : ""});
+    }, onNameChange: function (e) {
+        this.setState({name: e.target.value});
     }, onUsernameBlur: function (e) {
         var username = e.target.value;
         if (username.length < 6) {

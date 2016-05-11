@@ -3,7 +3,7 @@ var Index = React.createClass({
     getDefaultProps: function () {
         return {user: {role: 0}};
     }, getInitialState: function () {
-        return {role: this.props.user.role, name: this.props.user.username}
+        return {role: this.props.user.role, name: this.props.user.name}
     }, render: function () {
         var navbar, sidebar;
         switch (this.state.role) {
@@ -36,7 +36,7 @@ var Index = React.createClass({
         e.preventDefault();
         this.refs.loginModal.show();
     }, loginConfirm: function (user) {
-        this.setState({role: user.role, name: user.username});
+        this.setState({role: user.role, name: user.name});
         if (user.role == 2) {
             location.href = "/company/management";
         }
@@ -44,7 +44,7 @@ var Index = React.createClass({
         e.preventDefault();
         this.refs.registerModal.show();
     }, registerConfirm: function (user) {
-        this.setState({role: user.role, name: user.username});
+        this.setState({role: user.role, name: user.name});
     }, logout: function (e) {
         e.preventDefault();
         $.get("/users/logout", function () {
