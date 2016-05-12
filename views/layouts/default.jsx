@@ -13,7 +13,7 @@ var DefaultLayout = React.createClass({
                             <span className="icon-bar"/>
                             <span className="icon-bar"/>
                         </button>
-                        <a className="navbar-brand" href="#">法务原型</a>
+                        <a className="navbar-brand" href="/">法务原型</a>
                     </div>
                     <div className="navbar-collapse collapse">{this.props.navbar}</div>
                 </div>

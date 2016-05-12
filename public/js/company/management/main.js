@@ -219,7 +219,7 @@ var DefaultLayout = React.createClass({
                         ),
                         React.createElement(
                             "a",
-                            { className: "navbar-brand", href: "#" },
+                            { className: "navbar-brand", href: "/" },
                             "法务原型"
                         )
                     ),
@@ -350,7 +350,7 @@ var AddCompanyModal = React.createClass({
                         React.createElement(DateTimeField, { dateTime: this.state.date, format: this.state.format,
                             inputFormat: this.state.format, mode: 'date',
                             inputProps: { id: 'inputSettlementAdd', className: 'form-control' },
-                            onChange: this.onSettlementChange })
+                            onChange: this.onSettlementChange, minDate: moment("2016-01-04") })
                     )
                 ),
                 React.createElement(
@@ -567,7 +567,7 @@ var AdminSidebar = React.createClass({
                 { className: this.props.selected === 1 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "#" },
+                    { href: "/company/management" },
                     "破产企业管理"
                 )
             ),

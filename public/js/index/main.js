@@ -130,7 +130,7 @@ var DefaultLayout = React.createClass({
                         ),
                         React.createElement(
                             "a",
-                            { className: "navbar-brand", href: "#" },
+                            { className: "navbar-brand", href: "/" },
                             "法务原型"
                         )
                     ),
@@ -822,7 +822,7 @@ var AdminSidebar = React.createClass({
                 { className: this.props.selected === 1 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "#" },
+                    { href: "/company/management" },
                     "破产企业管理"
                 )
             ),

@@ -8,23 +8,24 @@ var register = function () {
         name: String,
         representative: String,
         phone_representative: String,
-        agents: {type: [Schema.Types.ObjectId], ref: 'User'},
+        agents: [{type: Schema.Types.ObjectId, ref: 'User'}],
         phone: String,
         fax: String,
         postcode: String,
         address: String,
         reason: String,
         file: String,
-        garantee: {name: String, money: String, style: Number},
-        judge: Boolean,
+        guarantee: {name: String, money: Number, style: Number},
+        judge: {money: Number, file: String},
         rule: Boolean,
         claim_type: Number,
-        currency: {type: [Schema.Types.ObjectId], ref: 'Currency'},
+        currency: {type: Schema.Types.ObjectId, ref: 'Currency'},
         principal: Number,
-        interest_type: Number,
-        interest: Number,
+        interest: {calculate: Number, start: Date, amount: Number},
         claim_information: String,
-        attachments: [{name: String, path: String, attachment_type: Number}]
+        attachments: {type: [{name: String, path: String, style: Number}], default: []},
+        display: String,
+        state: {type: Number, default: 0}
     });
     mongoose.model('Claim', Claims);
 };

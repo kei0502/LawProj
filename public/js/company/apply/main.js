@@ -77,7 +77,7 @@ var CompanyApplyCompanyListElement = React.createClass({
             { className: "col-sm-4 col-md-3" },
             React.createElement(
                 "a",
-                { href: "/claim/?companyId=" + this.props._id },
+                { href: "/claim/add?companyId=" + this.props._id },
                 this.props.name
             ),
             React.createElement(
@@ -173,7 +173,7 @@ var DefaultLayout = React.createClass({
                         ),
                         React.createElement(
                             "a",
-                            { className: "navbar-brand", href: "#" },
+                            { className: "navbar-brand", href: "/" },
                             "法务原型"
                         )
                     ),
