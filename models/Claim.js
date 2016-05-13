@@ -25,7 +25,7 @@ var register = function () {
         claim_information: String,
         attachments: {type: [{name: String, path: String, style: Number}], default: []},
         display: String,
-        state: {type: Number, default: 0}
+        state: {type: Number, default: 1}
     });
     mongoose.model('Claim', Claims);
 };

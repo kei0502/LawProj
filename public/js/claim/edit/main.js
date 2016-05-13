@@ -4,68 +4,111 @@
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
     DeletableListItem = require('../../deletableListItem.jsx'),
-    CurrencyOption = require('../../currencyOption.jsx');
+    CurrencyOption = require('../../currencyOption.jsx'),
+    $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var ClaimEditBody = React.createClass({
     displayName: 'ClaimEditBody',
 
     getInitialState: function getInitialState() {
         var claim = this.props.claim;
-        return {
-            name: claim.name,
-            representative: claim.representative,
-            phone_representative: claim.phone_representative,
-            agents: claim.agents,
-            phone: claim.phone,
-            fax: claim.fax,
-            postcode: claim.postcode,
-            address: claim.address,
-            reason: claim.reason,
-            guaranteed: claim.guarantee ? true : false,
-            guaranteedName: claim.guarantee ? claim.guarantee.name : "",
-            guaranteedMoney: claim.guarantee ? claim.guarantee.money : "",
-            guaranteedStyle: claim.guarantee ? claim.guarantee.style : 1,
-            judged: claim.judge ? true : false,
-            judgedMoney: claim.judge ? claim.judge.money : "",
-            rule: claim.rule,
-            claim_type: claim.claim_type,
-            currencyId: claim.currency ? claim.currency._id : this.props.currencies[0]._id,
-            principal: claim.principal,
-            interest: claim.interest,
-            claim_information: claim.claim_information,
-            attachments: claim.attachments,
-            attachmentName: "",
-            attachmentStyle: 1,
-            display: claim.display,
-            state: claim.state
-        };
+        if (claim) {
+            return {
+                name: claim.name,
+                representative: claim.representative,
+                phone_representative: claim.phone_representative,
+                agents: claim.agents,
+                phone: claim.phone,
+                fax: claim.fax,
+                postcode: claim.postcode,
+                address: claim.address,
+                reason: claim.reason,
+                guaranteed: claim.guarantee ? true : false,
+                guaranteedName: claim.guarantee ? claim.guarantee.name : "",
+                guaranteedMoney: claim.guarantee ? claim.guarantee.money : "",
+                guaranteedStyle: claim.guarantee ? claim.guarantee.style : 1,
+                judged: claim.judge ? true : false,
+                judgedMoney: claim.judge ? claim.judge.money : "",
+                rule: claim.rule,
+                claim_type: claim.claim_type,
+                currencyId: claim.currency,
+                principal: claim.principal,
+                interest: claim.interest.amount,
+                claim_information: claim.claim_information,
+                attachments: claim.attachments,
+                attachmentName: "",
+                attachmentStyle: 1,
+                display: claim.display,
+                state: claim.state,
+                editable: this.props.editable,
+                newAttachments: [],
+                attachmentMessage: "",
+                message: ""
+            };
+        } else {
+            return {
+                name: "",
+                representative: "",
+                phone_representative: "",
+                agents: [this.props.user],
+                phone: "",
+                fax: "",
+                postcode: "",
+                address: "",
+                reason: "",
+                guaranteed: false,
+                guaranteedName: "",
+                guaranteedMoney: "",
+                guaranteedStyle: 1,
+                judged: false,
+                judgedMoney: "",
+                rule: false,
+                claim_type: 1,
+                currencyId: this.props.currencies[0]._id,
+                principal: "",
+                interest: "",
+                claim_information: "",
+                attachments: [],
+                attachmentName: "",
+                attachmentStyle: 1,
+                display: "债权申请表",
+                state: 1,
+                editable: this.props.editable,
+                newAttachments: [],
+                attachmentMessage: "",
+                message: ""
+            };
+        }
     }, render: function render() {
         var agentList = this.state.agents.map((function (agent, i) {
             return React.createElement(DeletableListItem, { content: agent.name, remove: this.onRemoveAgent.bind(this, i),
-                deletable: agent._id != this.props.userid });
+                deletable: this.state.editable && agent._id !== this.props.user._id });
         }).bind(this)),
-            fileArea = this.props.claim.file ? React.createElement(
-            'div',
-            { className: 'col-sm-8 col-sm-offset-3', id: 'reasonArea' },
+            fileArea = this.props.claim && this.props.claim.file ? React.createElement(
+            'span',
+            null,
             '已上传',
             React.createElement(
                 'a',
                 { href: this.props.claim.file, target: '_blank' },
                 '《债权申报书》'
-            )
+            ),
+            '替换为:'
         ) : React.createElement(
-            'div',
-            { className: 'col-sm-8 col-sm-offset-3', id: 'reasonArea' },
-            '必要时可上传《债权申报书》',
-            React.createElement('input', { type: 'file', id: 'reasonFile', style: { display: 'inline-block' }, ref: 'file',
-                onChange: this.onFileChange })
+            'span',
+            null,
+            '必要时可上传《债权申报书》'
         ),
             currencyOptions = this.props.currencies.map(function (currency) {
             return React.createElement(CurrencyOption, currency);
         }),
             fileList = this.state.attachments.map((function (attachment, i) {
             return React.createElement(DeletableListItem, { content: attachment.name, href: attachment.path,
-                remove: this.onRemoveAttachment.bind(this, i) });
-        }).bind(this));
+                remove: this.onRemoveAttachment.bind(this, i), deletable: this.state.editable });
+        }).bind(this)).concat(this.state.newAttachments.map((function (attachment, i) {
+            return React.createElement(DeletableListItem, { content: attachment.name, href: attachment.path,
+                remove: this.onRemoveNewAttachment.bind(this, i),
+                deletable: this.state.editable });
+        }).bind(this)));
         return React.createElement(
             'div',
             null,
@@ -92,7 +135,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'creditorInput', value: this.state.name,
-                                onChange: this.onNameChange })
+                                onChange: this.onNameChange, disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -107,7 +150,8 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'representativeInput',
-                                value: this.state.representative, onChange: this.onRepresentativeChange })
+                                value: this.state.representative, onChange: this.onRepresentativeChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -122,7 +166,8 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'representativeMobileInput',
-                                value: this.state.phone_representative, onChange: this.onPhoneRepresentativeChange })
+                                value: this.state.phone_representative, onChange: this.onPhoneRepresentativeChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -140,10 +185,11 @@ var ClaimEditBody = React.createClass({
                         ),
                         React.createElement(
                             'div',
-                            { className: 'col-md-2' },
+                            { className: 'col-md-2', style: this.state.editable ? {} : { display: "none" } },
                             React.createElement(
-                                'button',
-                                { className: 'btn btn-primary', id: 'addAgentButton', onClick: this.props.registerStart },
+                                'a',
+                                { href: '#', className: 'btn btn-primary', id: 'addAgentButton',
+                                    onClick: this.props.registerStart },
                                 '注册新代理人'
                             )
                         )
@@ -160,7 +206,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'agentMobileInput', value: this.state.phone,
-                                onChange: this.onPhoneChange })
+                                onChange: this.onPhoneChange, disabled: !this.state.editable })
                         ),
                         React.createElement(
                             'label',
@@ -171,7 +217,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'agentFaxInput', value: this.state.fax,
-                                onChange: this.onFaxChange })
+                                onChange: this.onFaxChange, disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -186,7 +232,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'agentCodeInput', value: this.state.postcode,
-                                onChange: this.onPostcodeChange })
+                                onChange: this.onPostcodeChange, disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -201,7 +247,8 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'agentAddressInput',
-                                value: this.state.address, onChange: this.onAddressChange })
+                                value: this.state.address, onChange: this.onAddressChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -216,13 +263,19 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('textarea', { className: 'form-control', id: 'reasonInput', value: this.state.reason,
-                                onChange: this.onReasonChange })
+                                onChange: this.onReasonChange, disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
                         'div',
                         { className: 'form-group' },
-                        fileArea
+                        React.createElement(
+                            'div',
+                            { className: 'col-sm-8 col-sm-offset-3', id: 'reasonArea' },
+                            fileArea,
+                            React.createElement('input', { type: 'file', id: 'reasonFile', style: { display: 'inline-block' }, ref: 'file',
+                                onChange: this.onFileChange, disabled: !this.state.editable })
+                        )
                     ),
                     React.createElement(
                         'div',
@@ -239,14 +292,14 @@ var ClaimEditBody = React.createClass({
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'guaranteeInput', value: '', checked: !this.state.guaranteed,
-                                    onChange: this.onGuaranteedChange }),
+                                    onChange: this.onGuaranteedChange, disabled: !this.state.editable }),
                                 '无'
                             ),
                             React.createElement(
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'guaranteeInput', value: '1', checked: this.state.guaranteed,
-                                    onChange: this.onGuaranteedChange }),
+                                    onChange: this.onGuaranteedChange, disabled: !this.state.editable }),
                                 '有'
                             )
                         )
@@ -270,7 +323,8 @@ var ClaimEditBody = React.createClass({
                                     'div',
                                     { className: 'col-sm-8' },
                                     React.createElement('input', { type: 'text', className: 'form-control', id: 'guaranteeNameInput',
-                                        value: this.state.guaranteedName, onChange: this.onGuaranteedNameChange })
+                                        value: this.state.guaranteedName, onChange: this.onGuaranteedNameChange,
+                                        disabled: !this.state.editable })
                                 )
                             ),
                             React.createElement(
@@ -285,7 +339,8 @@ var ClaimEditBody = React.createClass({
                                     'div',
                                     { className: 'col-sm-8' },
                                     React.createElement('input', { type: 'text', className: 'form-control', id: 'guaranteeNumberInput',
-                                        value: this.state.guaranteedMoney, onChange: this.onGuaranteedMoneyChange })
+                                        value: this.state.guaranteedMoney, onChange: this.onGuaranteedMoneyChange,
+                                        disabled: !this.state.editable })
                                 )
                             ),
                             React.createElement(
@@ -304,7 +359,7 @@ var ClaimEditBody = React.createClass({
                                         { className: 'radio-inline' },
                                         React.createElement('input', { type: 'radio', name: 'guaranteeTypeInput', value: '1',
                                             checked: this.state.guaranteedStyle === 1,
-                                            onChange: this.onGuaranteedStyleChange }),
+                                            onChange: this.onGuaranteedStyleChange, disabled: !this.state.editable }),
                                         '保证'
                                     ),
                                     React.createElement(
@@ -312,7 +367,7 @@ var ClaimEditBody = React.createClass({
                                         { className: 'radio-inline' },
                                         React.createElement('input', { type: 'radio', name: 'guaranteeTypeInput', value: '2',
                                             checked: this.state.guaranteedStyle === 2,
-                                            onChange: this.onGuaranteedStyleChange }),
+                                            onChange: this.onGuaranteedStyleChange, disabled: !this.state.editable }),
                                         '抵押'
                                     ),
                                     React.createElement(
@@ -320,7 +375,7 @@ var ClaimEditBody = React.createClass({
                                         { className: 'radio-inline' },
                                         React.createElement('input', { type: 'radio', name: 'guaranteeTypeInput', value: '3',
                                             checked: this.state.guaranteedStyle === 3,
-                                            onChange: this.onGuaranteedStyleChange }),
+                                            onChange: this.onGuaranteedStyleChange, disabled: !this.state.editable }),
                                         '质押'
                                     )
                                 )
@@ -342,14 +397,14 @@ var ClaimEditBody = React.createClass({
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'judgeInput', value: '', checked: !this.state.judged,
-                                    onChange: this.onJudgedChange }),
+                                    onChange: this.onJudgedChange, disabled: !this.state.editable }),
                                 '无'
                             ),
                             React.createElement(
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'judgeInput', value: '1', checked: this.state.judged,
-                                    onChange: this.onJudgedChange }),
+                                    onChange: this.onJudgedChange, disabled: !this.state.editable }),
                                 '有'
                             )
                         )
@@ -369,14 +424,14 @@ var ClaimEditBody = React.createClass({
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'ruleInput', value: '', checked: !this.state.rule,
-                                    onChange: this.onRuleChange }),
+                                    onChange: this.onRuleChange, disabled: !this.state.editable }),
                                 '无'
                             ),
                             React.createElement(
                                 'label',
                                 { className: 'radio-inline' },
                                 React.createElement('input', { type: 'radio', name: 'ruleInput', value: '1', checked: this.state.rule,
-                                    onChange: this.onRuleChange }),
+                                    onChange: this.onRuleChange, disabled: !this.state.editable }),
                                 '有'
                             )
                         )
@@ -396,6 +451,39 @@ var ClaimEditBody = React.createClass({
                         { className: 'form-group' },
                         React.createElement(
                             'label',
+                            { htmlFor: 'claimTypeInput', className: 'col-sm-3 control-label' },
+                            '债权类型'
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'col-sm-9' },
+                            React.createElement(
+                                'select',
+                                { id: 'claimTypeInput', className: 'form-control', value: this.state.claim_type,
+                                    onChange: this.onClaimTypeChange, disabled: !this.state.editable },
+                                React.createElement(
+                                    'option',
+                                    { value: '1' },
+                                    '类型1'
+                                ),
+                                React.createElement(
+                                    'option',
+                                    { value: '2' },
+                                    '类型2'
+                                ),
+                                React.createElement(
+                                    'option',
+                                    { value: '3' },
+                                    '类型3'
+                                )
+                            )
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'label',
                             { htmlFor: 'moneyTypeInput', className: 'col-sm-3 control-label' },
                             '币种'
                         ),
@@ -406,7 +494,8 @@ var ClaimEditBody = React.createClass({
                                 'select',
                                 { id: 'moneyTypeInput', className: 'form-control',
                                     value: this.state.currencyId,
-                                    onChange: this.onCurrencyChange },
+                                    onChange: this.onCurrencyChange,
+                                    disabled: !this.state.editable },
                                 currencyOptions
                             )
                         ),
@@ -418,7 +507,8 @@ var ClaimEditBody = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-sm-3' },
-                            React.createElement('input', { type: 'text', className: 'form-control', id: 'moneyTotalInput', disabled: 'disabled' })
+                            React.createElement('input', { type: 'text', className: 'form-control', id: 'moneyTotalInput', disabled: 'disabled',
+                                value: Number(this.state.principal) + Number(this.state.interest) })
                         )
                     ),
                     React.createElement(
@@ -433,7 +523,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'principalInput', value: this.state.principal,
-                                onChange: this.onPrincipalChange })
+                                onChange: this.onPrincipalChange, disabled: !this.state.editable })
                         ),
                         React.createElement(
                             'label',
@@ -443,7 +533,9 @@ var ClaimEditBody = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-sm-3' },
-                            React.createElement('input', { type: 'text', className: 'form-control', id: 'interestShow' })
+                            React.createElement('input', { type: 'text', className: 'form-control', id: 'interestShow', value: this.state.interest,
+                                onChange: this.onInterestChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -458,18 +550,20 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'judgeNumberInput',
-                                value: this.state.judgedMoney, onChange: this.onJudgedMoneyChange })
+                                value: this.state.judgedMoney, onChange: this.onJudgedMoneyChange,
+                                disabled: !this.state.editable })
                         ),
                         React.createElement(
                             'label',
                             { htmlFor: 'judgeFile',
                                 className: 'col-sm-2 control-label' },
-                            this.props.judged ? '凭证已上传' : '必须上传凭证'
+                            this.props.claim && this.props.claim.judge ? '凭证已上传' : '必须上传凭证'
                         ),
                         React.createElement(
                             'div',
                             { className: 'col-sm-3' },
-                            React.createElement('input', { id: 'judgeFile', type: 'file', onChange: this.onJudgedFileChange })
+                            React.createElement('input', { id: 'judgeFile', type: 'file', onChange: this.onJudgedFileChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement(
@@ -484,13 +578,14 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'moreInput',
-                                value: this.state.claim_information, onChange: this.onClaimInformationChange })
+                                value: this.state.claim_information, onChange: this.onClaimInformationChange,
+                                disabled: !this.state.editable })
                         )
                     ),
                     React.createElement('hr', null),
                     React.createElement(
                         'div',
-                        { id: 'fileArea' },
+                        { id: 'fileArea', style: this.state.editable ? {} : { display: "none" } },
                         React.createElement(
                             'div',
                             { className: 'form-group' },
@@ -509,7 +604,7 @@ var ClaimEditBody = React.createClass({
                                 '上传附件'
                             ),
                             React.createElement('input', { type: 'file', className: 'col-sm-8', id: 'fileInput',
-                                onchange: this.onAttachmentFileChange })
+                                onChange: this.onAttachmentFileChange, disabled: !this.state.editable })
                         ),
                         React.createElement(
                             'div',
@@ -569,7 +664,13 @@ var ClaimEditBody = React.createClass({
                             React.createElement(
                                 'label',
                                 { className: 'col-sm-offset-3 col-sm-8 control-label', style: { textAlign: 'left' } },
-                                '同一类附件请打包上传'
+                                '同一类附件请打包上传',
+                                React.createElement('br', null),
+                                React.createElement(
+                                    'span',
+                                    { className: 'text-danger' },
+                                    this.state.attachmentMessage
+                                )
                             )
                         ),
                         React.createElement(
@@ -579,8 +680,8 @@ var ClaimEditBody = React.createClass({
                                 'div',
                                 { className: 'col-sm-1 col-sm-offset-5' },
                                 React.createElement(
-                                    'button',
-                                    { className: 'btn btn-primary', id: 'addFileButton', onClick: this.addAttachment },
+                                    'a',
+                                    { href: '#', className: 'btn btn-primary', id: 'addFileButton', onClick: this.addAttachment },
                                     '添加'
                                 )
                             )
@@ -594,7 +695,11 @@ var ClaimEditBody = React.createClass({
                             { className: 'col-sm-3 control-label' },
                             '附件列表'
                         ),
-                        React.createElement('ul', { className: 'col-sm-8 file-list' })
+                        React.createElement(
+                            'ul',
+                            { className: 'col-sm-8 file-list' },
+                            fileList
+                        )
                     ),
                     React.createElement(
                         'div',
@@ -608,7 +713,17 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-8' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'commentNameInput', value: this.state.display,
-                                onChange: this.onDisplayChange })
+                                onChange: this.onDisplayChange, disabled: !this.state.editable })
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'label',
+                            { className: 'col-sm-offset-3 col-sm-8 control-label text-danger',
+                                style: { textAlign: 'left' } },
+                            this.state.message
                         )
                     ),
                     React.createElement(
@@ -619,17 +734,20 @@ var ClaimEditBody = React.createClass({
                             { className: 'col-sm-offset-5 col-sm-5' },
                             React.createElement(
                                 'button',
-                                { type: 'button', id: 'submitButton', className: 'btn btn-primary' },
+                                { type: 'button', id: 'submitButton', className: 'btn btn-primary',
+                                    style: this.state.editable ? {} : { display: "none" }, onClick: this.onSubmit },
                                 '确定'
                             ),
                             React.createElement(
                                 'a',
-                                { href: 'userFormCreate.html?type=edit', id: 'editButton', className: 'btn btn-primary' },
+                                { href: '#', id: 'editButton', className: 'btn btn-primary',
+                                    style: this.state.editable ? { display: "none" } : {}, onClick: this.onEdit },
                                 '编辑'
                             ),
                             React.createElement(
                                 'button',
-                                { type: 'button', id: 'printButton', className: 'btn btn-primary' },
+                                { type: 'button', id: 'printButton', className: 'btn btn-primary',
+                                    style: this.state.editable ? { display: "none" } : {} },
                                 '打印'
                             )
                         )
@@ -643,7 +761,8 @@ var ClaimEditBody = React.createClass({
         this.setState({ representative: e.target.value });
     }, onPhoneRepresentativeChange: function onPhoneRepresentativeChange(e) {
         this.setState({ phone_representative: e.target.value });
-    }, onRemoveAgent: function onRemoveAgent(index) {
+    }, onRemoveAgent: function onRemoveAgent(index, e) {
+        e.preventDefault();
         var initial = this.state.agents;
         if (index === 0) {
             this.setState({ agents: initial.slice(1) });
@@ -685,10 +804,14 @@ var ClaimEditBody = React.createClass({
         if (e.target.checked) {
             this.setState({ rule: !!e.target.value });
         }
+    }, onClaimTypeChange: function onClaimTypeChange(e) {
+        this.setState({ claim_type: e.target.value });
     }, onCurrencyChange: function onCurrencyChange(e) {
         this.setState({ currencyId: e.target.value });
     }, onPrincipalChange: function onPrincipalChange(e) {
         this.setState({ principal: e.target.value });
+    }, onInterestChange: function onInterestChange(e) {
+        this.setState({ interest: e.target.value });
     }, onJudgedMoneyChange: function onJudgedMoneyChange(e) {
         this.setState({ judgedMoney: e.target.value });
     }, onJudgedFileChange: function onJudgedFileChange(e) {
@@ -707,7 +830,30 @@ var ClaimEditBody = React.createClass({
         }
     }, addAttachment: function addAttachment(e) {
         e.preventDefault();
-    }, onRemoveAttachment: function onRemoveAttachment(index) {
+        if (this.state.attachmentName.length === 0) {
+            this.setState({ attachmentMessage: "附件名称不能为空" });
+        } else if (!this.state.attachmentFile) {
+            this.setState({ attachmentMessage: "未选择文件" });
+        } else {
+            var name = this.state.attachmentName,
+                file = this.state.attachmentFile;
+            if (name.indexOf('.') < 0) {
+                var fileName = file.name,
+                    index = fileName.lastIndexOf('.');
+                if (index >= 0) {
+                    name += fileName.substring(index);
+                }
+            }
+            var newAttachments = this.state.newAttachments.concat({
+                name: name,
+                path: URL.createObjectURL(file),
+                file: file,
+                style: this.state.attachmentStyle
+            });
+            this.setState({ attachmentName: "", attachmentMessage: "", newAttachments: newAttachments });
+        }
+    }, onRemoveAttachment: function onRemoveAttachment(index, e) {
+        e.preventDefault();
         var initial = this.state.attachments;
         if (initial.length === 1) {
             this.setState({ attachments: [] });
@@ -718,10 +864,126 @@ var ClaimEditBody = React.createClass({
         } else {
             this.setState({ attachments: initial.slice(0, index).concat(initial.slice(index + 1)) });
         }
+    }, onRemoveNewAttachment: function onRemoveNewAttachment(index, e) {
+        e.preventDefault();
+        var initial = this.state.newAttachments;
+        if (initial.length === 1) {
+            this.setState({ newAttachments: [] });
+        } else if (index === 0) {
+            this.setState({ newAttachments: initial.slice(1) });
+        } else if (index === initial.length - 1) {
+            this.setState({ newAttachments: initial.slice(0, index) });
+        } else {
+            this.setState({ newAttachments: initial.slice(0, index).concat(initial.slice(index + 1)) });
+        }
     }, onDisplayChange: function onDisplayChange(e) {
         this.setState({ display: e.target.value });
     }, registerConfirm: function registerConfirm(user) {
         this.setState({ agents: this.state.agents.concat(user) });
+    }, onEdit: function onEdit(e) {
+        e.preventDefault();
+        this.setState({ editable: true });
+    }, onSubmit: function onSubmit(e) {
+        if (!this.state.name) {
+            this.setState({ message: "债权人名称不能为空" });
+        } else if (!this.state.representative) {
+            this.setState({ message: "法定代表人不能为空" });
+        } else if (!this.state.phone_representative) {
+            this.setState({ message: "法定代表人联系电话不能为空" });
+        } else if (!this.state.phone) {
+            this.setState({ message: "联系电话不能为空" });
+        } else if (!this.state.postcode) {
+            this.setState({ message: "邮政编码不能为空" });
+        } else if (!this.state.address) {
+            this.setState({ message: "地址不能为空" });
+        } else if (!this.state.reason) {
+            this.setState({ message: "原因不能为空" });
+        } else if (!this.state.principal) {
+            this.setState({ message: "本金不能为空" });
+        } else if (isNaN(Number(this.state.principal))) {
+            this.setState({ message: "本金应为数字" });
+        } else if (isNaN(Number(this.state.interest))) {
+            this.setState({ message: "利息应为数字" });
+        } else if (!this.state.display) {
+            this.setState({ message: "备注名不能为空" });
+        } else {
+            if (this.state.guaranteed) {
+                if (!this.state.guaranteedName) {
+                    this.setState({ message: "担保人名称不能为空" });
+                    return;
+                } else if (!this.state.guaranteedMoney) {
+                    this.setState({ message: "担保金额不能为空" });
+                    return;
+                } else if (isNaN(Number(this.state.guaranteedMoney))) {
+                    this.setState({ message: "担保金额应为数字" });
+                    return;
+                }
+            }
+            if (this.state.judged) {
+                if (isNaN(Number(this.state.judgedMoney))) {
+                    this.setState({ message: "诉讼费应为数字" });
+                    return;
+                }
+                if (!(this.props.claim && this.props.claim.judge) && !this.state.judgedFile) {
+                    this.setState({ message: "必须上传诉讼费凭证" });
+                    return;
+                }
+            }
+            var formData = new FormData();
+            formData.append("name", this.state.name);
+            formData.append("representative", this.state.representative);
+            formData.append("phone_representative", this.state.phone_representative);
+            formData.append("agents", JSON.stringify(this.state.agents.map(function (agent) {
+                return agent._id;
+            })));
+            formData.append("phone", this.state.phone);
+            formData.append("fax", this.state.fax);
+            formData.append("postcode", this.state.postcode);
+            formData.append("address", this.state.address);
+            formData.append("reason", this.state.reason);
+            if (this.state.file) {
+                formData.append("file", this.state.file);
+            }
+            if (this.state.guaranteed) {
+                formData.append("guarantee", JSON.stringify({
+                    name: this.state.guaranteedName,
+                    money: Number(this.state.guaranteedMoney),
+                    style: this.state.guaranteedStyle
+                }));
+            }
+            if (this.state.judged) {
+                formData.append("judgedMoney", this.state.judgedMoney);
+                if (this.state.judgedFile) {
+                    formData.append("judgedFile", this.state.judgedFile);
+                }
+            }
+            formData.append("rule", this.state.rule ? "1" : "");
+            formData.append("claim_type", this.state.claim_type);
+            formData.append("currency", this.state.currencyId);
+            formData.append("principal", this.state.principal);
+            formData.append("interest", JSON.stringify({ amount: Number(this.state.interest) }));
+            formData.append("claim_information", this.state.claim_information);
+            formData.append("attachments", JSON.stringify(this.state.attachments));
+            formData.append("newAttachments", JSON.stringify(this.state.newAttachments.map(function (attachment) {
+                return { name: attachment.name, style: attachment.style };
+            })));
+            this.state.newAttachments.forEach(function (attachment, i) {
+                formData.append("newAttachment" + i, attachment.file);
+            });
+            formData.append("display", this.state.display);
+            if (!this.props.claim) {
+                $.ajax("/claims?companyId=" + this.props.companyId, {
+                    method: "POST", data: formData, contentType: false, processData: false, success: function success(data) {
+                        console.log(data);
+                        location.href = "/claim/view?claimId=" + data._id;
+                    }, error: (function (xhr) {
+                        if (xhr.statusCode) {
+                            this.setState({ message: xhr.responseJSON.error });
+                        }
+                    }).bind(this)
+                });
+            } else {}
+        }
     }
 });
 module.exports = ClaimEditBody;
@@ -747,6 +1009,8 @@ module.exports = function (data, containerId) {
 (function (global){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
     DefaultLayout = require('../../layouts/default.jsx'),
     CreditorNavbar = require('../../navbars/creditor.jsx'),
@@ -759,9 +1023,8 @@ var ClaimEditView = React.createClass({
 
     render: function render() {
         var navbar = React.createElement(CreditorNavbar, { name: this.props.user.name, logout: this.logout }),
-            sidebar = React.createElement(CreditorSidebar, { selected: this.props.claim.state ? 2 : 1 }),
-            body = React.createElement(ClaimEditBody, { claim: this.props.claim, currencies: this.props.currencies,
-            registerStart: this.registerStart, ref: 'body' });
+            sidebar = React.createElement(CreditorSidebar, { selected: this.props.claim ? 2 : 1 }),
+            body = React.createElement(ClaimEditBody, _extends({}, this.props, { registerStart: this.registerStart, ref: 'body' }));
         return React.createElement(
             DefaultLayout,
             { navbar: navbar, sidebar: sidebar, main: body },
@@ -794,7 +1057,7 @@ var CurrencyOption = React.createClass({
         return React.createElement(
             "option",
             { value: this.props._id },
-            this.props.name + " " + this.props.code + (this.props.exchange ? " -- " + this.props.exchange.rate : "")
+            this.props.name + " " + this.props.code + (this.props.exchange && this.props.exchange.length > 0 ? " -- " + this.props.exchange[0].rate : "")
         );
     }
 });
@@ -1097,7 +1360,7 @@ var RegisterModal = React.createClass({
                 if (err) {
                     console.log(err);
                 } else {
-                    $.ajax("users/register", {
+                    $.ajax("/users/register", {
                         method: "POST",
                         data: { username: username, name: name, password: hash, salt1: salt },
                         success: (function (data) {

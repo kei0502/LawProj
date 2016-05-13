@@ -31,3 +31,6 @@ npm-debug.log
 
 #WebStorm Config
 .idea
+
+#uploaded files
+public/uploads

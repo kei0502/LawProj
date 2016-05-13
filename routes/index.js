@@ -35,59 +35,75 @@ router.get('/company/apply', authentication.creditor, function (req, res, next) 
     });
 });
 router.get('/claim/add', authentication.creditor, function (req, res, next) {
-    if (!req.query.companyId) {
+    var companyId = req.query.companyId;
+    if (!companyId) {
         var err = new Error("Empty company id");
-        err.status(400);
+        err.status = 400;
         next(err);
     }
-    Company.findOne({_id: req.query.companyId}, function (err, company) {
+    Company.findOne({
+        _id: companyId,
+        expire: {$gte: moment(moment().format('YYYY-MM-DD')).toDate()}
+    }, 'settlement', function (err, company) {
         if (err) next(err);
         if (null == company) {
             var err = new Error("Wrong company id");
-            err.status(400);
+            err.status = 400;
             next(err);
         }
-        Currency.find().populate('exchange').exec(function (err, currencies) {
+        Currency.find().populate({
+            path: 'exchange',
+            match: {date: {$lte: company.settlement}},
+            options: {sort: {date: 'desc'}, limit: 1}
+        }).exec(function (err, currencies) {
             if (err) next(err);
-            var newCurrencies = currencies.map(function (currency) {
-                var start = new Date(), end = company.settlement.getTime();
-                start.setTime(0);
-                var exchange = currency.exchange.length === 0 ? undefined : currency.exchange.reduce(function (v, exchange) {
-                    var start = v.date.getTime(), exchangeDate = exchange.date.getTime();
-                    if (start < exchangeDate && exchangeDate <= end) {
-                        return exchange;
-                    } else {
-                        return v;
-                    }
-                }, {date: start, rate: 0});
-                return {
-                    _id: currency._id,
-                    name: currency.name,
-                    code: currency.code,
-                    exchange: exchange
-                };
-            });
-            var claim = new Claim(), user = req.session.user;
-            claim.agents = [user];
-            claim.save(function (err, claim) {
-                if (err) next(err);
-                company.claims.push(claim._id);
-                company.save(function (err, company) {
-                    if (err) next(err);
-                    claim.populate({path: 'agents', select: 'name'}, function (err, claim) {
-                        if (err) next(err);
-                        res.render('claim/edit/container', {
-                            data: {
-                                user: user,
-                                claim: claim,
-                                currencies: newCurrencies
-                            }
-                        });
-                    });
-                });
+            res.render('claim/edit/container', {
+                data: {
+                    user: req.session.user,
+                    currencies: currencies,
+                    companyId: companyId,
+                    editable: true
+                }
             });
         });
     })
+});
+router.get("/claim/view", authentication.creditor, function (req, res, next) {
+    var claimId = req.query.claimId;
+    if (!claimId) {
+        var err = new Error("Empty claim id");
+        err.status = 400;
+        next(err);
+    }
+    Claim.findOne({_id: claimId, agents: req.session.user._id}).populate({
+        path: "agents",
+        select: "name"
+    }).exec(function (err, claim) {
+        if (err) next(err);
+        if (null == claim) {
+            var err = new Error("Wrong claim id");
+            err.status = 400;
+            next(err);
+        }
+        Company.findOne({claims: claimId}, "settlement", function (err, company) {
+            if (err) next(err);
+            Currency.find().populate({
+                path: 'exchange',
+                match: {date: {$lte: company.settlement}},
+                options: {sort: {date: 'desc'}, limit: 1}
+            }).exec(function (err, currencies) {
+                if (err) next(err);
+                res.render('claim/edit/container', {
+                    data: {
+                        user: req.session.user,
+                        currencies: currencies,
+                        claim: claim,
+                        editable: false
+                    }
+                });
+            });
+        })
+    });
 });
 
 module.exports = router;

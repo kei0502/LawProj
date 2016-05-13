@@ -2,9 +2,8 @@ var React = require('react'), DefaultLayout = require('../../layouts/default.jsx
 var ClaimEditView = React.createClass({
     render: function () {
         var navbar = (<CreditorNavbar name={this.props.user.name} logout={this.logout}/>), sidebar = (
-            <CreditorSidebar selected={this.props.claim.state?2:1}/>), body = (
-            <ClaimEditBody claim={this.props.claim} currencies={this.props.currencies}
-                           registerStart={this.registerStart} ref="body"/>);
+            <CreditorSidebar selected={this.props.claim?2:1}/>), body = (
+            <ClaimEditBody {...this.props} registerStart={this.registerStart} ref="body"/>);
         return (<DefaultLayout navbar={navbar} sidebar={sidebar} main={body}>
             <RegisterModal confirm={this.registerConfirm} ref="registerModal"/>
         </DefaultLayout>);
