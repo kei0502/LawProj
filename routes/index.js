@@ -62,6 +62,7 @@ router.get('/claim/add', authentication.creditor, function (req, res, next) {
                     user: req.session.user,
                     currencies: currencies,
                     companyId: companyId,
+                    settlement: moment(company.settlement).format('YYYY-MM-DD'),
                     editable: true
                 }
             });
@@ -93,11 +94,42 @@ router.get("/claim/view", authentication.creditor, function (req, res, next) {
                 options: {sort: {date: 'desc'}, limit: 1}
             }).exec(function (err, currencies) {
                 if (err) next(err);
+                var interest = claim.interest;
+                console.log(claim.guarantee);
+                console.log(claim.judge);
                 res.render('claim/edit/container', {
                     data: {
                         user: req.session.user,
                         currencies: currencies,
-                        claim: claim,
+                        claim: {
+                            _id: claim._id,
+                            name: claim.name,
+                            representative: claim.representative,
+                            phone_representative: claim.phone_representative,
+                            agents: claim.agents,
+                            phone: claim.phone,
+                            fax: claim.fax,
+                            postcode: claim.postcode,
+                            address: claim.address,
+                            reason: claim.reason,
+                            file: claim.file,
+                            guarantee: claim.guarantee,
+                            judge: claim.judge,
+                            rule: claim.rule,
+                            claim_type: claim.claim_type,
+                            currency: claim.currency,
+                            principal: claim.principal,
+                            interest: interest ? {
+                                calculate: interest.calculate,
+                                start: moment(interest.start).format('YYYY-MM-DD'),
+                                amount: interest.amount
+                            } : undefined,
+                            claim_information: claim.claim_information,
+                            attachments: claim.attachments,
+                            display: claim.display,
+                            state: claim.state
+                        },
+                        settlement: moment(company.settlement).format('YYYY-MM-DD'),
                         editable: false
                     }
                 });

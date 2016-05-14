@@ -32,7 +32,7 @@ var ClaimEditBody = React.createClass({
                 claim_type: claim.claim_type,
                 currencyId: claim.currency,
                 principal: claim.principal,
-                interest: claim.interest.amount,
+                interest: claim.interest,
                 claim_information: claim.claim_information,
                 attachments: claim.attachments,
                 attachmentName: "",
@@ -42,6 +42,7 @@ var ClaimEditBody = React.createClass({
                 editable: this.props.editable,
                 newAttachments: [],
                 attachmentMessage: "",
+                principalMessage: "",
                 message: ""
             };
         } else {
@@ -65,7 +66,6 @@ var ClaimEditBody = React.createClass({
                 claim_type: 1,
                 currencyId: this.props.currencies[0]._id,
                 principal: "",
-                interest: "",
                 claim_information: "",
                 attachments: [],
                 attachmentName: "",
@@ -75,6 +75,7 @@ var ClaimEditBody = React.createClass({
                 editable: this.props.editable,
                 newAttachments: [],
                 attachmentMessage: "",
+                principalMessage: "",
                 message: ""
             };
         }
@@ -108,7 +109,21 @@ var ClaimEditBody = React.createClass({
             return React.createElement(DeletableListItem, { content: attachment.name, href: attachment.path,
                 remove: this.onRemoveNewAttachment.bind(this, i),
                 deletable: this.state.editable });
-        }).bind(this)));
+        }).bind(this))),
+            judgedFileLabel = this.props.claim && this.props.claim.judge ? React.createElement(
+            'label',
+            { htmlFor: 'judgeFile', className: 'col-sm-2 control-label' },
+            React.createElement(
+                'a',
+                { href: this.props.claim.judge.file, target: '_blank' },
+                '凭证'
+            ),
+            '已上传'
+        ) : React.createElement(
+            'label',
+            { htmlFor: 'judgeFile', className: 'col-sm-2 control-label' },
+            '必须上传凭证'
+        );
         return React.createElement(
             'div',
             null,
@@ -508,7 +523,7 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'moneyTotalInput', disabled: 'disabled',
-                                value: Number(this.state.principal) + Number(this.state.interest) })
+                                value: (Number(this.state.principal) + (this.state.interest ? this.state.interest.amount : 0)).toFixed(2) })
                         )
                     ),
                     React.createElement(
@@ -523,7 +538,12 @@ var ClaimEditBody = React.createClass({
                             'div',
                             { className: 'col-sm-3' },
                             React.createElement('input', { type: 'text', className: 'form-control', id: 'principalInput', value: this.state.principal,
-                                onChange: this.onPrincipalChange, disabled: !this.state.editable })
+                                onChange: this.onPrincipalChange, disabled: !this.state.editable }),
+                            React.createElement(
+                                'label',
+                                { className: 'text-danger control-label' },
+                                this.state.principalMessage
+                            )
                         ),
                         React.createElement(
                             'label',
@@ -533,9 +553,9 @@ var ClaimEditBody = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-sm-3' },
-                            React.createElement('input', { type: 'text', className: 'form-control', id: 'interestShow', value: this.state.interest,
-                                onChange: this.onInterestChange,
-                                disabled: !this.state.editable })
+                            React.createElement('input', { type: 'text', className: 'form-control', id: 'interestShow',
+                                value: this.state.interest ? this.state.interest.amount.toFixed(2) : "",
+                                disabled: !this.state.editable, onFocus: this.onInterestFocus })
                         )
                     ),
                     React.createElement(
@@ -553,12 +573,7 @@ var ClaimEditBody = React.createClass({
                                 value: this.state.judgedMoney, onChange: this.onJudgedMoneyChange,
                                 disabled: !this.state.editable })
                         ),
-                        React.createElement(
-                            'label',
-                            { htmlFor: 'judgeFile',
-                                className: 'col-sm-2 control-label' },
-                            this.props.claim && this.props.claim.judge ? '凭证已上传' : '必须上传凭证'
-                        ),
+                        judgedFileLabel,
                         React.createElement(
                             'div',
                             { className: 'col-sm-3' },
@@ -809,9 +824,28 @@ var ClaimEditBody = React.createClass({
     }, onCurrencyChange: function onCurrencyChange(e) {
         this.setState({ currencyId: e.target.value });
     }, onPrincipalChange: function onPrincipalChange(e) {
-        this.setState({ principal: e.target.value });
-    }, onInterestChange: function onInterestChange(e) {
-        this.setState({ interest: e.target.value });
+        var value = e.target.value;
+        if (!value) {
+            this.setState({ principalMessage: "本金不能为空", principal: value });
+        } else if (isNaN(Number(value))) {
+            this.setState({ principalMessage: "本金应为数字", principal: value });
+        } else {
+            this.props.onPrincipal(Number(value));
+            this.setState({ principalMessage: "", principal: value });
+        }
+    }, onInterestFocus: function onInterestFocus(e) {
+        e.preventDefault();
+        var principal = this.state.principal;
+        if (!principal) {
+            this.setState({ principalMessage: "本金不能为空" });
+        } else if (isNaN(Number(principal))) {
+            this.setState({ principalMessage: "本金应为数字" });
+        } else {
+            this.setState({ principalMessage: "" });
+            this.props.interestStart(Number(principal));
+        }
+    }, onInterest: function onInterest(interest) {
+        this.setState({ interest: interest });
     }, onJudgedMoneyChange: function onJudgedMoneyChange(e) {
         this.setState({ judgedMoney: e.target.value });
     }, onJudgedFileChange: function onJudgedFileChange(e) {
@@ -902,8 +936,6 @@ var ClaimEditBody = React.createClass({
             this.setState({ message: "本金不能为空" });
         } else if (isNaN(Number(this.state.principal))) {
             this.setState({ message: "本金应为数字" });
-        } else if (isNaN(Number(this.state.interest))) {
-            this.setState({ message: "利息应为数字" });
         } else if (!this.state.display) {
             this.setState({ message: "备注名不能为空" });
         } else {
@@ -961,7 +993,9 @@ var ClaimEditBody = React.createClass({
             formData.append("claim_type", this.state.claim_type);
             formData.append("currency", this.state.currencyId);
             formData.append("principal", this.state.principal);
-            formData.append("interest", JSON.stringify({ amount: Number(this.state.interest) }));
+            if (this.state.interest) {
+                formData.append("interest", JSON.stringify(this.state.interest));
+            }
             formData.append("claim_information", this.state.claim_information);
             formData.append("attachments", JSON.stringify(this.state.attachments));
             formData.append("newAttachments", JSON.stringify(this.state.newAttachments.map(function (attachment) {
@@ -1017,18 +1051,38 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
     CreditorSidebar = require('../../sidebars/creditor.jsx'),
     ClaimEditBody = require('./body.jsx'),
     RegisterModal = require('../../modals/register.jsx'),
+    InterestModal = require('../../modals/interest.jsx'),
     $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var ClaimEditView = React.createClass({
     displayName: 'ClaimEditView',
 
-    render: function render() {
+    getInitialState: function getInitialState() {
+        if (this.props.claim) {
+            var claim = this.props.claim;
+            if (claim.interest) {
+                return {
+                    principal: claim.principal,
+                    start: claim.interest.start,
+                    calculate: claim.interest.calculate,
+                    amount: claim.interest.amount
+                };
+            } else {
+                return { principal: claim.principal };
+            }
+        } else {
+            return { principal: 0 };
+        }
+    }, render: function render() {
         var navbar = React.createElement(CreditorNavbar, { name: this.props.user.name, logout: this.logout }),
             sidebar = React.createElement(CreditorSidebar, { selected: this.props.claim ? 2 : 1 }),
-            body = React.createElement(ClaimEditBody, _extends({}, this.props, { registerStart: this.registerStart, ref: 'body' }));
+            body = React.createElement(ClaimEditBody, _extends({}, this.props, { registerStart: this.registerStart, interestStart: this.interestStart,
+            onPrincipal: this.onPrincipal, ref: 'body' }));
         return React.createElement(
             DefaultLayout,
             { navbar: navbar, sidebar: sidebar, main: body },
-            React.createElement(RegisterModal, { confirm: this.registerConfirm, ref: 'registerModal' })
+            React.createElement(RegisterModal, { confirm: this.registerConfirm, ref: 'registerModal' }),
+            React.createElement(InterestModal, { principal: this.state.principal, start: this.state.start, amount: this.state.amount,
+                end: this.props.settlement, confirm: this.interestConfirm, ref: 'interestModal' })
         );
     }, logout: function logout(e) {
         e.preventDefault();
@@ -1040,12 +1094,18 @@ var ClaimEditView = React.createClass({
         this.refs.registerModal.show();
     }, registerConfirm: function registerConfirm(user) {
         this.refs.body.registerConfirm(user);
+    }, onPrincipal: function onPrincipal(principal) {
+        this.refs.interestModal.onPrincipal(principal);
+    }, interestStart: function interestStart(principal) {
+        this.refs.interestModal.show();
+    }, interestConfirm: function interestConfirm(interest) {
+        this.refs.body.onInterest(interest);
     }
 });
 module.exports = ClaimEditView;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../../layouts/default.jsx":6,"../../modals/register.jsx":8,"../../navbars/creditor.jsx":9,"../../sidebars/creditor.jsx":10,"./body.jsx":1}],4:[function(require,module,exports){
+},{"../../layouts/default.jsx":6,"../../modals/interest.jsx":8,"../../modals/register.jsx":9,"../../navbars/creditor.jsx":10,"../../sidebars/creditor.jsx":11,"./body.jsx":1}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -1245,6 +1305,174 @@ module.exports = DefaultModal;
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
+    DefaultModal = require('./default.jsx'),
+    moment = (typeof window !== "undefined" ? window['moment'] : typeof global !== "undefined" ? global['moment'] : null),
+    DateTimeField = (typeof window !== "undefined" ? window['ReactBootstrapDatetimepicker'] : typeof global !== "undefined" ? global['ReactBootstrapDatetimepicker'] : null);
+var InterestModal = React.createClass({
+    displayName: 'InterestModal',
+
+    getDefaultProps: function getDefaultProps() {
+        return { calculate: "", format: "YYYY-MM-DD", amount: 0 };
+    }, getInitialState: function getInitialState() {
+        return {
+            principal: this.props.principal,
+            calculate: this.props.calculate,
+            start: this.props.start ? this.props.start : this.props.end,
+            amount: this.props.amount
+        };
+    }, render: function render() {
+        return React.createElement(
+            DefaultModal,
+            { name: 'interest', title: '利息', ref: 'modal', confirm: this.confirm },
+            React.createElement(
+                'form',
+                { className: 'form-horizontal' },
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { htmlFor: 'principalShow', className: 'col-sm-3 control-label' },
+                        '本金'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement('input', { type: 'text', className: 'form-control', id: 'principalShow', disabled: 'disabled',
+                            value: this.state.principal.toFixed(2) })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { className: 'col-sm-3 control-label', htmlFor: 'calculateInput' },
+                        '计算方法'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement(
+                            'select',
+                            { className: 'form-control', id: 'calculateInput', value: this.state.calculate,
+                                onChange: this.onCalculateChange },
+                            React.createElement(
+                                'option',
+                                { value: '' },
+                                '无利息'
+                            ),
+                            React.createElement(
+                                'option',
+                                { value: '1' },
+                                '百元基数计息法'
+                            ),
+                            React.createElement(
+                                'option',
+                                { value: '2' },
+                                '积数计息法'
+                            ),
+                            React.createElement(
+                                'option',
+                                { value: '3' },
+                                '利余'
+                            ),
+                            React.createElement(
+                                'option',
+                                { value: '4' },
+                                '其他'
+                            )
+                        )
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { className: 'col-sm-3 control-label', htmlFor: 'startDateInput' },
+                        '起始日期'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement(DateTimeField, { dateTime: this.props.start ? this.props.start : this.props.end,
+                            format: this.props.format, inputFormat: this.props.format, mode: 'date',
+                            inputProps: { id: 'startDateInput', className: 'form-control' },
+                            onChange: this.onStartChange, maxDate: moment(this.props.end) })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { className: 'col-sm-3 control-label', htmlFor: 'endDateInput' },
+                        '截止日期'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement('input', { id: 'endDateInput', type: 'text', className: 'form-control', value: this.props.end,
+                            disabled: 'disabled' })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    React.createElement(
+                        'label',
+                        { htmlFor: 'interestInput', className: 'col-sm-3 control-label' },
+                        '利息'
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'col-sm-7' },
+                        React.createElement('input', { type: 'text', className: 'form-control', id: 'interestInput', disabled: 'disabled',
+                            value: this.state.amount.toFixed(2) })
+                    )
+                )
+            )
+        );
+    }, hide: function hide() {
+        this.refs.modal.hide();
+    }, show: function show() {
+        this.refs.modal.show();
+    }, onPrincipal: function onPrincipal(principal) {
+        var amount = this.state.calculate ? principal * 0.05 : 0;
+        if (this.state.calculate) {
+            this.props.confirm({
+                calculate: this.state.calculate,
+                state: this.props.start,
+                amount: amount
+            });
+        } else {
+            this.props.confirm();
+        }
+        this.setState({ principal: principal, amount: amount });
+    }, onCalculateChange: function onCalculateChange(e) {
+        var value = e.target.value;
+        this.setState({ calculate: value, amount: value ? this.state.principal * 0.05 : 0 });
+    }, onStartChange: function onStartChange(e) {
+        this.setState({ start: e });
+    }, confirm: function confirm(e) {
+        e.preventDefault();
+        if (this.state.calculate) {
+            this.props.confirm({ calculate: this.state.calculate, start: this.props.start, amount: this.state.amount });
+        } else {
+            this.props.confirm();
+        }
+        this.hide();
+    }
+});
+module.exports = InterestModal;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./default.jsx":7}],9:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
     $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null),
     DefaultModal = require('./default.jsx'),
     bcrypt = (typeof window !== "undefined" ? window['dcodeIO']['bcrypt'] : typeof global !== "undefined" ? global['dcodeIO']['bcrypt'] : null);
@@ -1413,7 +1641,7 @@ var RegisterModal = React.createClass({
 module.exports = RegisterModal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./default.jsx":7}],9:[function(require,module,exports){
+},{"./default.jsx":7}],10:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -1463,7 +1691,7 @@ var CreditorNavbar = React.createClass({
 module.exports = CreditorNavbar;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (global){
 "use strict";
 

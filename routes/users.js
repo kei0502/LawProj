@@ -46,6 +46,7 @@ router.post('/register', function (req, res, next) {
 router.get('/login', function (req, res, next) {
     var username = decodeURIComponent(req.query.username);
     User.find({username: username}, function (err, users) {
+        if (err) next(err);
         if (users.length === 0) {
             res.status(401).send({error: "密码错误或该用户不存在"});
         } else {

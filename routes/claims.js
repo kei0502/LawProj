@@ -51,7 +51,16 @@ router.post('/', authentication.creditor, multipartMiddleware, function (req, re
         claim.claim_type = Number(req.body.claim_type);
         claim.currency = req.body.currency;
         claim.principal = Number(req.body.principal);
-        claim.interest = JSON.parse(req.body.interest);
+        var interest = req.body.interest;
+        if (interest) {
+            var interestTemp = JSON.parse(interest);
+            interest = {
+                calculate: Number(interestTemp.calculate),
+                start: moment(interestTemp.start).toDate(),
+                amount: Number(interestTemp.amount)
+            };
+        }
+        claim.interest = interest;
         claim.claim_information = req.body.claim_information;
         claim.display = req.body.display;
         var claimId = claim._id;

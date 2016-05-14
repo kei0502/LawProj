@@ -23,7 +23,7 @@ var ClaimEditBody = React.createClass({
                 claim_type: claim.claim_type,
                 currencyId: claim.currency,
                 principal: claim.principal,
-                interest: claim.interest.amount,
+                interest: claim.interest,
                 claim_information: claim.claim_information,
                 attachments: claim.attachments,
                 attachmentName: "",
@@ -33,6 +33,7 @@ var ClaimEditBody = React.createClass({
                 editable: this.props.editable,
                 newAttachments: [],
                 attachmentMessage: "",
+                principalMessage: "",
                 message: ""
             };
         } else {
@@ -56,7 +57,6 @@ var ClaimEditBody = React.createClass({
                 claim_type: 1,
                 currencyId: this.props.currencies[0]._id,
                 principal: "",
-                interest: "",
                 claim_information: "",
                 attachments: [],
                 attachmentName: "",
@@ -66,6 +66,7 @@ var ClaimEditBody = React.createClass({
                 editable: this.props.editable,
                 newAttachments: [],
                 attachmentMessage: "",
+                principalMessage: "",
                 message: ""
             };
         }
@@ -84,7 +85,10 @@ var ClaimEditBody = React.createClass({
             return (<DeletableListItem content={attachment.name} href={attachment.path}
                                        remove={this.onRemoveNewAttachment.bind(this,i)}
                                        deletable={this.state.editable}/>);
-        }.bind(this)));
+        }.bind(this))), judgedFileLabel = this.props.claim && this.props.claim.judge ? (
+            <label htmlFor="judgeFile" className="col-sm-2 control-label">
+                <a href={this.props.claim.judge.file} target="_blank">凭证</a>已上传
+            </label>) : (<label htmlFor="judgeFile" className="col-sm-2 control-label">必须上传凭证</label>);
         return (<div>
             <h1 className="page-header">添加债权申请表</h1>
             <div className="col-sm-12 col-md-12">
@@ -269,7 +273,7 @@ var ClaimEditBody = React.createClass({
                         <label htmlFor="moneyTotalInput" className="col-sm-2 control-label">总金额</label>
                         <div className="col-sm-3">
                             <input type="text" className="form-control" id="moneyTotalInput" disabled="disabled"
-                                   value={Number(this.state.principal)+Number(this.state.interest)}/>
+                                   value={(Number(this.state.principal)+(this.state.interest?this.state.interest.amount:0)).toFixed(2)}/>
                         </div>
                     </div>
                     <div className="form-group">
@@ -277,12 +281,13 @@ var ClaimEditBody = React.createClass({
                         <div className="col-sm-3">
                             <input type="text" className="form-control" id="principalInput" value={this.state.principal}
                                    onChange={this.onPrincipalChange} disabled={!this.state.editable}/>
+                            <label className="text-danger control-label">{this.state.principalMessage}</label>
                         </div>
                         <label htmlFor="interestShow" className="col-sm-2 control-label">利息</label>
                         <div className="col-sm-3">
-                            <input type="text" className="form-control" id="interestShow" value={this.state.interest}
-                                   onChange={this.onInterestChange}
-                                   disabled={!this.state.editable}/>
+                            <input type="text" className="form-control" id="interestShow"
+                                   value={this.state.interest?this.state.interest.amount.toFixed(2):""}
+                                   disabled={!this.state.editable} onFocus={this.onInterestFocus}/>
                         </div>
                     </div>
                     <div id="judgeArea" style={this.state.judged?{}:{display:'none'}} className="form-group">
@@ -292,8 +297,7 @@ var ClaimEditBody = React.createClass({
                                    value={this.state.judgedMoney} onChange={this.onJudgedMoneyChange}
                                    disabled={!this.state.editable}/>
                         </div>
-                        <label htmlFor="judgeFile"
-                               className="col-sm-2 control-label">{this.props.claim && this.props.claim.judge ? '凭证已上传' : '必须上传凭证'}</label>
+                        {judgedFileLabel}
                         <div className="col-sm-3">
                             <input id="judgeFile" type="file" onChange={this.onJudgedFileChange}
                                    disabled={!this.state.editable}/>
@@ -441,9 +445,28 @@ var ClaimEditBody = React.createClass({
     }, onCurrencyChange: function (e) {
         this.setState({currencyId: e.target.value});
     }, onPrincipalChange: function (e) {
-        this.setState({principal: e.target.value});
-    }, onInterestChange: function (e) {
-        this.setState({interest: e.target.value});
+        var value = e.target.value;
+        if (!value) {
+            this.setState({principalMessage: "本金不能为空", principal: value});
+        } else if (isNaN(Number(value))) {
+            this.setState({principalMessage: "本金应为数字", principal: value});
+        } else {
+            this.props.onPrincipal(Number(value));
+            this.setState({principalMessage: "", principal: value});
+        }
+    }, onInterestFocus: function (e) {
+        e.preventDefault();
+        var principal = this.state.principal;
+        if (!principal) {
+            this.setState({principalMessage: "本金不能为空"});
+        } else if (isNaN(Number(principal))) {
+            this.setState({principalMessage: "本金应为数字"});
+        } else {
+            this.setState({principalMessage: ""});
+            this.props.interestStart(Number(principal));
+        }
+    }, onInterest: function (interest) {
+        this.setState({interest: interest});
     }, onJudgedMoneyChange: function (e) {
         this.setState({judgedMoney: e.target.value});
     }, onJudgedFileChange: function (e) {
@@ -532,8 +555,6 @@ var ClaimEditBody = React.createClass({
             this.setState({message: "本金不能为空"});
         } else if (isNaN(Number(this.state.principal))) {
             this.setState({message: "本金应为数字"});
-        } else if (isNaN(Number(this.state.interest))) {
-            this.setState({message: "利息应为数字"});
         } else if (!this.state.display) {
             this.setState({message: "备注名不能为空"});
         } else {
@@ -591,7 +612,9 @@ var ClaimEditBody = React.createClass({
             formData.append("claim_type", this.state.claim_type);
             formData.append("currency", this.state.currencyId);
             formData.append("principal", this.state.principal);
-            formData.append("interest", JSON.stringify({amount: Number(this.state.interest)}));
+            if (this.state.interest) {
+                formData.append("interest", JSON.stringify(this.state.interest));
+            }
             formData.append("claim_information", this.state.claim_information);
             formData.append("attachments", JSON.stringify(this.state.attachments));
             formData.append("newAttachments", JSON.stringify(this.state.newAttachments.map(function (attachment) {
