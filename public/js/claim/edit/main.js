@@ -5,7 +5,8 @@
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
     DeletableListItem = require('../../deletableListItem.jsx'),
     CurrencyOption = require('../../currencyOption.jsx'),
-    $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+    $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null),
+    moment = (typeof window !== "undefined" ? window['moment'] : typeof global !== "undefined" ? global['moment'] : null);
 var ClaimEditBody = React.createClass({
     displayName: 'ClaimEditBody',
 
@@ -756,7 +757,8 @@ var ClaimEditBody = React.createClass({
                             React.createElement(
                                 'a',
                                 { href: '#', id: 'editButton', className: 'btn btn-primary',
-                                    style: this.state.editable ? { display: "none" } : {}, onClick: this.onEdit },
+                                    style: this.state.editable || moment(this.props.expire).isBefore(moment(), 'day') ? { display: "none" } : {},
+                                    onClick: this.onEdit },
                                 '编辑'
                             ),
                             React.createElement(
@@ -984,7 +986,7 @@ var ClaimEditBody = React.createClass({
                 }));
             }
             if (this.state.judged) {
-                formData.append("judgedMoney", this.state.judgedMoney);
+                formData.append("judgedMoney", Number(this.state.judgedMoney));
                 if (this.state.judgedFile) {
                     formData.append("judgedFile", this.state.judgedFile);
                 }
@@ -1008,15 +1010,24 @@ var ClaimEditBody = React.createClass({
             if (!this.props.claim) {
                 $.ajax("/claims?companyId=" + this.props.companyId, {
                     method: "POST", data: formData, contentType: false, processData: false, success: function success(data) {
-                        console.log(data);
-                        location.href = "/claim/view?claimId=" + data._id;
+                        location.href = "/claim/view/" + data._id;
                     }, error: (function (xhr) {
                         if (xhr.statusCode) {
                             this.setState({ message: xhr.responseJSON.error });
                         }
                     }).bind(this)
                 });
-            } else {}
+            } else {
+                $.ajax("/claims/" + this.props.claim._id, {
+                    method: "PUT", data: formData, contentType: false, processData: false, success: function success(data) {
+                        location.reload();
+                    }, error: (function (xhr) {
+                        if (xhr.statusCode) {
+                            this.setState({ message: xhr.responseJSON.error });
+                        }
+                    }).bind(this)
+                });
+            }
         }
     }
 });

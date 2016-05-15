@@ -11,10 +11,10 @@ var register = function () {
         settlement: Date,
         expire: Date,
         vote: {type: Date, default: undefined},
-        validator_company: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
-        validator_accountant: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
-        admin: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
-        claims: {type: [Schema.Types.ObjectId], ref: '', default: []}
+        validator_company: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
+        validator_accountant: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
+        admin: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
+        claims: {type: [{type: Schema.Types.ObjectId, ref: 'Claim'}], default: []}
     });
     mongoose.model('Company', Companies);
 };

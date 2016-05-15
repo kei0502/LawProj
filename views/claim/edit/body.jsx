@@ -1,4 +1,4 @@
-var React = require('react'), DeletableListItem = require('../../deletableListItem.jsx'), CurrencyOption = require('../../currencyOption.jsx'), $ = require('jquery');
+var React = require('react'), DeletableListItem = require('../../deletableListItem.jsx'), CurrencyOption = require('../../currencyOption.jsx'), $ = require('jquery'), moment = require('moment');
 var ClaimEditBody = React.createClass({
     getInitialState: function () {
         var claim = this.props.claim;
@@ -382,7 +382,8 @@ var ClaimEditBody = React.createClass({
                                     style={this.state.editable?{}:{display:"none"}} onClick={this.onSubmit}>确定
                             </button>
                             <a href="#" id="editButton" className="btn btn-primary"
-                               style={this.state.editable?{display:"none"}:{}} onClick={this.onEdit}>编辑</a>
+                               style={this.state.editable||moment(this.props.expire).isBefore(moment(),'day')?{display:"none"}:{}}
+                               onClick={this.onEdit}>编辑</a>
                             <button type="button" id="printButton" className="btn btn-primary"
                                     style={this.state.editable?{display:"none"}:{}}>打印
                             </button>
@@ -603,7 +604,7 @@ var ClaimEditBody = React.createClass({
                 }));
             }
             if (this.state.judged) {
-                formData.append("judgedMoney", this.state.judgedMoney);
+                formData.append("judgedMoney", Number(this.state.judgedMoney));
                 if (this.state.judgedFile) {
                     formData.append("judgedFile", this.state.judgedFile);
                 }
@@ -627,8 +628,7 @@ var ClaimEditBody = React.createClass({
             if (!this.props.claim) {
                 $.ajax("/claims?companyId=" + this.props.companyId, {
                     method: "POST", data: formData, contentType: false, processData: false, success: function (data) {
-                        console.log(data);
-                        location.href = "/claim/view?claimId=" + data._id;
+                        location.href = "/claim/view/" + data._id;
                     }, error: function (xhr) {
                         if (xhr.statusCode) {
                             this.setState({message: xhr.responseJSON.error});
@@ -636,7 +636,15 @@ var ClaimEditBody = React.createClass({
                     }.bind(this)
                 });
             } else {
-
+                $.ajax("/claims/" + this.props.claim._id, {
+                    method: "PUT", data: formData, contentType: false, processData: false, success: function (data) {
+                        location.reload();
+                    }, error: function (xhr) {
+                        if (xhr.statusCode) {
+                            this.setState({message: xhr.responseJSON.error});
+                        }
+                    }.bind(this)
+                });
             }
         }
     }
