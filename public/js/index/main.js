@@ -909,7 +909,7 @@ var CreditorSidebar = React.createClass({
                 { className: this.props.selected === 2 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "/claims/list" },
+                    { href: "/claim/list" },
                     "查看债权申请表"
                 )
             )

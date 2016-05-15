@@ -472,7 +472,7 @@ var ClaimEditBody = React.createClass({
                         ),
                         React.createElement(
                             'div',
-                            { className: 'col-sm-9' },
+                            { className: 'col-sm-8' },
                             React.createElement(
                                 'select',
                                 { id: 'claimTypeInput', className: 'form-control', value: this.state.claim_type,
@@ -754,6 +754,7 @@ var ClaimEditBody = React.createClass({
                                     style: this.state.editable ? {} : { display: "none" }, onClick: this.onSubmit },
                                 '确定'
                             ),
+                            ' ',
                             React.createElement(
                                 'a',
                                 { href: '#', id: 'editButton', className: 'btn btn-primary',
@@ -761,6 +762,7 @@ var ClaimEditBody = React.createClass({
                                     onClick: this.onEdit },
                                 '编辑'
                             ),
+                            ' ',
                             React.createElement(
                                 'button',
                                 { type: 'button', id: 'printButton', className: 'btn btn-primary',
@@ -1740,7 +1742,7 @@ var CreditorSidebar = React.createClass({
                 { className: this.props.selected === 2 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "/claims/list" },
+                    { href: "/claim/list" },
                     "查看债权申请表"
                 )
             )

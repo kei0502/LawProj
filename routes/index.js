@@ -83,76 +83,113 @@ router.get('/claim/add', authentication.creditor, function (req, res, next) {
         }
     })
 });
-router.get("/claim/view/:claimId", authentication.creditor, function (req, res, next) {
-    var claimId = req.params.claimId;
-    Claim.findOne({_id: claimId, agents: req.session.user._id}).populate({
-        path: "agents",
-        select: "name"
-    }).exec(function (err, claim) {
+router.get("/claim/list", authentication.creditor, function (req, res, next) {
+    Company.find({}, 'name expire claims').populate({
+        path: 'claims',
+        match: {agents: req.session.user._id},
+        select: 'display state',
+    }).exec(function (err, companies) {
         if (err) {
             next(err);
-        } else if (null == claim) {
-            var err = new Error("Wrong claim id");
-            err.status = 400;
-            next(err);
         } else {
-            Company.findOne({claims: claimId}, "settlement expire", function (err, company) {
-                if (err) {
-                    next(err);
-                } else {
-                    Currency.find().populate({
-                        path: 'exchange',
-                        match: {date: {$lte: company.settlement}},
-                        options: {sort: {date: 'desc'}, limit: 1}
-                    }).exec(function (err, currencies) {
-                        if (err) {
-                            next(err);
-                        } else {
-                            var interest = claim.interest;
-                            res.render('claim/edit/container', {
-                                data: {
-                                    user: req.session.user,
-                                    currencies: currencies,
-                                    claim: {
-                                        _id: claim._id,
-                                        name: claim.name,
-                                        representative: claim.representative,
-                                        phone_representative: claim.phone_representative,
-                                        agents: claim.agents,
-                                        phone: claim.phone,
-                                        fax: claim.fax,
-                                        postcode: claim.postcode,
-                                        address: claim.address,
-                                        reason: claim.reason,
-                                        file: claim.file,
-                                        guarantee: claim.guarantee,
-                                        judge: claim.judge,
-                                        rule: claim.rule,
-                                        claim_type: claim.claim_type,
-                                        currency: claim.currency,
-                                        principal: claim.principal,
-                                        interest: interest ? {
-                                            calculate: interest.calculate,
-                                            start: moment(interest.start).format('YYYY-MM-DD'),
-                                            amount: interest.amount
-                                        } : undefined,
-                                        claim_information: claim.claim_information,
-                                        attachments: claim.attachments,
-                                        display: claim.display,
-                                        state: claim.state
-                                    },
-                                    settlement: moment(company.settlement).format('YYYY-MM-DD'),
-                                    expire: moment(company.expire).format('YYYY-MM-DD'),
-                                    editable: false
-                                }
-                            });
-                        }
+            var claims = [];
+            companies.forEach(function (company) {
+                company.claims.forEach(function (claim) {
+                    claims.push({
+                        _id: claim._id,
+                        display: claim.display,
+                        state: claim.state,
+                        companyName: company.name,
+                        companyExpire: moment(company.expire).format('YYYY-MM-DD')
                     });
+                });
+            });
+            claims.sort(function (a, b) {
+                if (a._id === b._id) {
+                    return 0;
+                } else if (a._id < b._id) {
+                    return 1;
+                } else {
+                    return -1;
                 }
             });
+            res.render('claim/list/container', {data: {user: req.session.user, claims: claims}});
         }
-
     });
 });
+function claimView(editable) {
+    return function (req, res, next) {
+        var claimId = req.params.claimId;
+        Claim.findOne({_id: claimId, agents: req.session.user._id}).populate({
+            path: "agents",
+            select: "name"
+        }).exec(function (err, claim) {
+            if (err) {
+                next(err);
+            } else if (null == claim) {
+                var err = new Error("Wrong claim id");
+                err.status = 400;
+                next(err);
+            } else {
+                Company.findOne({claims: claimId}, "settlement expire", function (err, company) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        Currency.find().populate({
+                            path: 'exchange',
+                            match: {date: {$lte: company.settlement}},
+                            options: {sort: {date: 'desc'}, limit: 1}
+                        }).exec(function (err, currencies) {
+                            if (err) {
+                                next(err);
+                            } else {
+                                var interest = claim.interest;
+                                res.render('claim/edit/container', {
+                                    data: {
+                                        user: req.session.user,
+                                        currencies: currencies,
+                                        claim: {
+                                            _id: claim._id,
+                                            name: claim.name,
+                                            representative: claim.representative,
+                                            phone_representative: claim.phone_representative,
+                                            agents: claim.agents,
+                                            phone: claim.phone,
+                                            fax: claim.fax,
+                                            postcode: claim.postcode,
+                                            address: claim.address,
+                                            reason: claim.reason,
+                                            file: claim.file,
+                                            guarantee: claim.guarantee,
+                                            judge: claim.judge,
+                                            rule: claim.rule,
+                                            claim_type: claim.claim_type,
+                                            currency: claim.currency,
+                                            principal: claim.principal,
+                                            interest: interest ? {
+                                                calculate: interest.calculate,
+                                                start: moment(interest.start).format('YYYY-MM-DD'),
+                                                amount: interest.amount
+                                            } : undefined,
+                                            claim_information: claim.claim_information,
+                                            attachments: claim.attachments,
+                                            display: claim.display,
+                                            state: claim.state
+                                        },
+                                        settlement: moment(company.settlement).format('YYYY-MM-DD'),
+                                        expire: moment(company.expire).format('YYYY-MM-DD'),
+                                        editable: editable
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+}
+router.get("/claim/view/:claimId", authentication.creditor, claimView(false));
+router.get("/claim/edit/:claimId", authentication.creditor, claimView(true));
 
 module.exports = router;

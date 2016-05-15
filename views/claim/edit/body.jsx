@@ -253,7 +253,7 @@ var ClaimEditBody = React.createClass({
                     </div>
                     <div className="form-group">
                         <label htmlFor="claimTypeInput" className="col-sm-3 control-label">债权类型</label>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <select id="claimTypeInput" className="form-control" value={this.state.claim_type}
                                     onChange={this.onClaimTypeChange} disabled={!this.state.editable}>
                                 <option value="1">类型1</option>
@@ -381,9 +381,11 @@ var ClaimEditBody = React.createClass({
                             <button type="button" id="submitButton" className="btn btn-primary"
                                     style={this.state.editable?{}:{display:"none"}} onClick={this.onSubmit}>确定
                             </button>
+                            &nbsp;
                             <a href="#" id="editButton" className="btn btn-primary"
                                style={this.state.editable||moment(this.props.expire).isBefore(moment(),'day')?{display:"none"}:{}}
                                onClick={this.onEdit}>编辑</a>
+                            &nbsp;
                             <button type="button" id="printButton" className="btn btn-primary"
                                     style={this.state.editable?{display:"none"}:{}}>打印
                             </button>
