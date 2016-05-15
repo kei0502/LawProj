@@ -121,8 +121,8 @@ var CompanyManagementBody = React.createClass({
     }, onSelectStateChange: function onSelectStateChange(e) {
         this.setState({ selectState: value });
     }, addCompany: function addCompany(company) {
-        var companies = this.state.companies.concat(company);
-        this.setState({ companies: companies });
+        var companies = [company];
+        this.setState({ companies: companies.concat(this.state.companies) });
     }
 });
 module.exports = CompanyManagementBody;
