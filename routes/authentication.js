@@ -7,8 +7,9 @@ var authenticationGenerator = function (role) {
             var err = new Error("权限不足");
             err.status = 401;
             next(err);
+        } else {
+            next();
         }
-        next();
     }
 };
 exports.creditor = authenticationGenerator(1);
