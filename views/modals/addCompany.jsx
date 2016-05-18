@@ -1,6 +1,6 @@
 var React = require('react'), DefaultModal = require('./default.jsx'), DateTimeField = require('react-bootstrap-datetimepicker'), moment = require('moment'), $ = require('jquery');
 var AddCompanyModal = React.createClass({
-    getInitialState(){
+    getInitialState: function () {
         var format = "YYYY-MM-DD", current = moment(), date = current.format(format);
         return {
             cid: "",
@@ -45,7 +45,7 @@ var AddCompanyModal = React.createClass({
                         <DateTimeField dateTime={this.state.date} format={this.state.format}
                                        inputFormat={this.state.format} mode="date"
                                        inputProps={{id:'inputSettlementAdd',className:'form-control'}}
-                                       onChange={this.onSettlementChange}/>
+                                       onChange={this.onSettlementChange} minDate={moment("2016-01-04")}/>
                     </div>
                 </div>
                 <div className="form-group">

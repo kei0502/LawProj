@@ -188,11 +188,6 @@ body {
     list-style: none;
     padding-top: 7px;
 }
-.file-list li .file-name {
-    margin-bottom: 0;
-    padding-top: 7px;
-    margin-top: 0;
-}
 .file-list li a {
     margin-left: 10px;
 }

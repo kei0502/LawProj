@@ -130,7 +130,7 @@ var DefaultLayout = React.createClass({
                         ),
                         React.createElement(
                             "a",
-                            { className: "navbar-brand", href: "#" },
+                            { className: "navbar-brand", href: "/" },
                             "法务原型"
                         )
                     ),
@@ -479,7 +479,7 @@ var RegisterModal = React.createClass({
                 if (err) {
                     console.log(err);
                 } else {
-                    $.ajax("users/register", {
+                    $.ajax("/users/register", {
                         method: "POST",
                         data: { username: username, name: name, password: hash, salt1: salt },
                         success: (function (data) {
@@ -822,7 +822,7 @@ var AdminSidebar = React.createClass({
                 { className: this.props.selected === 1 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "#" },
+                    { href: "/company/management" },
                     "破产企业管理"
                 )
             ),
@@ -909,7 +909,7 @@ var CreditorSidebar = React.createClass({
                 { className: this.props.selected === 2 ? "active" : "" },
                 React.createElement(
                     "a",
-                    { href: "/claims/list" },
+                    { href: "/claim/list" },
                     "查看债权申请表"
                 )
             )

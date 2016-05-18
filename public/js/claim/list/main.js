@@ -3,18 +3,52 @@
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
-    CompanyApplyCompanyList = require('./companyList.jsx');
-var CompanyApplyView = React.createClass({
-    displayName: 'CompanyApplyView',
+    DataTable = (typeof window !== "undefined" ? window['ReactDataComponents'] : typeof global !== "undefined" ? global['ReactDataComponents'] : null).DataTable,
+    moment = (typeof window !== "undefined" ? window['moment'] : typeof global !== "undefined" ? global['moment'] : null);
+var CompanyManagementBody = React.createClass({
+    displayName: 'CompanyManagementBody',
 
-    render: function render() {
+    getDefaultProps: function getDefaultProps() {
+        return { states: ["", "申请中"] };
+    }, render: function render() {
+        function renderState(val) {
+            return this.props.states[val];
+        }
+
+        function renderOption(val, row) {
+            if (moment(row.companyExpire).isBefore(moment(), 'day')) {
+                return React.createElement(
+                    'a',
+                    { href: "/claim/view/" + row._id, className: 'label label-primary' },
+                    '查看'
+                );
+            } else {
+                return React.createElement(
+                    'span',
+                    null,
+                    React.createElement(
+                        'a',
+                        { href: "/claim/view/" + row._id, className: 'label label-primary' },
+                        '查看'
+                    ),
+                    ' ',
+                    React.createElement(
+                        'a',
+                        {
+                            href: "/claim/edit/" + row._id, className: 'label label-success' },
+                        '编辑'
+                    )
+                );
+            }
+        }
+
         return React.createElement(
             'div',
             null,
             React.createElement(
                 'h1',
                 { className: 'page-header' },
-                '添加债券申请表'
+                '查看债券申请表'
             ),
             React.createElement(
                 'div',
@@ -22,77 +56,19 @@ var CompanyApplyView = React.createClass({
                 React.createElement(
                     'div',
                     { className: 'col-sm-12' },
-                    React.createElement(
-                        'div',
-                        { className: 'header' },
-                        '选择债务公司'
-                    )
+                    React.createElement(DataTable, { keys: '_id',
+                        columns: [{ title: '备注名', prop: 'display' }, { title: '公司', prop: 'companyName' }, { title: '申请截止日期', prop: 'companyExpire' }, { title: '状态', prop: 'state', render: renderState.bind(this) }, { title: '操作', render: renderOption, sortable: false }],
+                        initialData: this.props.claims, initialPageLength: 10,
+                        initialSortBy: { prop: '_id', order: 'descending' }, pageLengthOptions: [5, 10, 50] })
                 )
-            ),
-            React.createElement(
-                'div',
-                { className: 'row' },
-                React.createElement(CompanyApplyCompanyList, { companies: this.props.companies })
             )
         );
     }
 });
-module.exports = CompanyApplyView;
+module.exports = CompanyManagementBody;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./companyList.jsx":2}],2:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
-    CompanyApplyCompanyListElement = require('./companyListElement.jsx');
-var CompanyApplyCompanyList = React.createClass({
-    displayName: 'CompanyApplyCompanyList',
-
-    render: function render() {
-        var elements = this.props.companies.map(function (companies) {
-            return React.createElement(CompanyApplyCompanyListElement, companies);
-        });
-        return React.createElement(
-            'ul',
-            { className: 'col-sm-12 company-list company-list-create' },
-            elements
-        );
-    }
-});
-module.exports = CompanyApplyCompanyList;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./companyListElement.jsx":3}],3:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var CompanyApplyCompanyListElement = React.createClass({
-    displayName: "CompanyApplyCompanyListElement",
-
-    render: function render() {
-        return React.createElement(
-            "li",
-            { className: "col-sm-4 col-md-3" },
-            React.createElement(
-                "a",
-                { href: "/claim/add?companyId=" + this.props._id },
-                this.props.name
-            ),
-            React.createElement(
-                "span",
-                {
-                    className: "date" },
-                this.props.expire
-            )
-        );
-    }
-});
-module.exports = CompanyApplyCompanyListElement;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){
 /**
  * Created by gyz on 16/5/10.
@@ -108,7 +84,7 @@ module.exports = function (data, containerId) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./view.jsx":5}],5:[function(require,module,exports){
+},{"./view.jsx":3}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -116,15 +92,14 @@ var React = (typeof window !== "undefined" ? window['React'] : typeof global !==
     DefaultLayout = require('../../layouts/default.jsx'),
     CreditorNavbar = require('../../navbars/creditor.jsx'),
     CreditorSidebar = require('../../sidebars/creditor.jsx'),
-    CompanyApplyBody = require('./body.jsx'),
-    $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
-var CompanyApplyView = React.createClass({
-    displayName: 'CompanyApplyView',
+    ClaimListBody = require('./body.jsx');
+var ClaimListView = React.createClass({
+    displayName: 'ClaimListView',
 
     render: function render() {
         var navbar = React.createElement(CreditorNavbar, { name: this.props.user.name, logout: this.logout }),
-            sidebar = React.createElement(CreditorSidebar, { selected: 1 }),
-            body = React.createElement(CompanyApplyBody, { companies: this.props.companies });
+            sidebar = React.createElement(CreditorSidebar, { selected: 2 }),
+            body = React.createElement(ClaimListBody, { claims: this.props.claims });
         return React.createElement(DefaultLayout, { navbar: navbar, sidebar: sidebar, main: body });
     }, logout: function logout(e) {
         e.preventDefault();
@@ -133,10 +108,10 @@ var CompanyApplyView = React.createClass({
         });
     }
 });
-module.exports = CompanyApplyView;
+module.exports = ClaimListView;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../../layouts/default.jsx":6,"../../navbars/creditor.jsx":7,"../../sidebars/creditor.jsx":8,"./body.jsx":1}],6:[function(require,module,exports){
+},{"../../layouts/default.jsx":4,"../../navbars/creditor.jsx":5,"../../sidebars/creditor.jsx":6,"./body.jsx":1}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -209,7 +184,7 @@ var DefaultLayout = React.createClass({
 module.exports = DefaultLayout;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -259,7 +234,7 @@ var CreditorNavbar = React.createClass({
 module.exports = CreditorNavbar;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -307,5 +282,5 @@ var CreditorSidebar = React.createClass({
 module.exports = CreditorSidebar;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[4])(4)
+},{}]},{},[2])(2)
 });

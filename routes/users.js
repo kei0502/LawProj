@@ -4,12 +4,16 @@ var router = express.Router();
 router.get('/register', function (req, res, next) {
     var username = decodeURIComponent(req.query.username);
     User.find({username: username}, function (err, users) {
-        if (err) next(err);
-        if (users.length === 0) {
+        if (err) {
+            next(err);
+        } else if (users.length === 0) {
             bcrypt.genSalt(12, function (err, salt) {
-                if (err) next(err);
-                req.session.salt1 = salt;
-                res.send({salt1: salt});
+                if (err) {
+                    next(err);
+                } else {
+                    req.session.salt1 = salt;
+                    res.send({salt1: salt});
+                }
             });
         } else {
             res.status(401).send({error: "用户名已存在"});
@@ -21,10 +25,12 @@ router.post('/register', function (req, res, next) {
     delete req.session.salt1;
     if (!serverSalt || clientSalt !== serverSalt) {
         res.status(409).send({error: "salt not equal"});
+        return;
     }
     User.find({username: req.body.username}, function (err, users) {
-        if (err) next(err);
-        if (users.length === 0) {
+        if (err) {
+            next(err);
+        } else if (users.length === 0) {
             var user = new User();
             user.username = req.body.username;
             user.name = req.body.name;
@@ -32,11 +38,16 @@ router.post('/register', function (req, res, next) {
             user.salt = serverSalt;
             user.role = 1;
             user.save(function (err, user) {
-                if (err) next(err);
-                req.session.loggedIn = true;
-                user = {role: user.role, name: user.name, username: user.username, _id: user._id};
-                req.session.user = user;
-                res.send(user);
+                if (err) {
+                    next(err);
+                } else {
+                    user = {role: user.role, name: user.name, username: user.username, _id: user._id};
+                    if (!req.session.loggedIn) {
+                        req.session.loggedIn = true;
+                        req.session.user = user;
+                    }
+                    res.send(user);
+                }
             });
         } else {
             res.status(409).send({error: "用户名已存在"});
@@ -46,18 +57,23 @@ router.post('/register', function (req, res, next) {
 router.get('/login', function (req, res, next) {
     var username = decodeURIComponent(req.query.username);
     User.find({username: username}, function (err, users) {
-        if (users.length === 0) {
+        if (err) {
+            next(err);
+        } else if (users.length === 0) {
             res.status(401).send({error: "密码错误或该用户不存在"});
         } else {
             var user = users[0];
             bcrypt.genSalt(8, function (err, salt) {
                 bcrypt.hash(user.password, salt, function (err, hash) {
-                    if (err) next(err);
-                    req.session.salt2 = salt;
-                    req.session.salt1 = user.salt;
-                    req.session.hash = hash;
-                    req.session.user = {role: user.role, name: user.name, username: user.username, _id: user._id};
-                    res.send({salt1: user.salt, salt2: salt});
+                    if (err) {
+                        next(err);
+                    } else {
+                        req.session.salt2 = salt;
+                        req.session.salt1 = user.salt;
+                        req.session.hash = hash;
+                        req.session.user = {role: user.role, name: user.name, username: user.username, _id: user._id};
+                        res.send({salt1: user.salt, salt2: salt});
+                    }
                 });
             });
         }

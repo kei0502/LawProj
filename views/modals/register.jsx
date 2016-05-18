@@ -63,7 +63,7 @@ var RegisterModal = React.createClass({
                 if (err) {
                     console.log(err);
                 } else {
-                    $.ajax("users/register", {
+                    $.ajax("/users/register", {
                         method: "POST",
                         data: {username: username, name: name, password: hash, salt1: salt},
                         success: function (data) {
