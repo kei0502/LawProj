@@ -31,3 +31,6 @@ npm-debug.log
 
 #WebStorm Config
 .idea
+
+#self testing
+models/test.js
