@@ -12,11 +12,15 @@ var Exchange = require('./models/Exchange');
 var Currency = require('./models/Currency');
 var Claim = require('./models/Claim');
 var Company = require('./models/Company');
+var Rate = require('./models/Rate');
+var RateDate = require('./models/RateDate')
 User.register();
 Exchange.register();
 Currency.register();
 Claim.register();
 Company.register();
+Rate.register();
+RateDate.register();
 // var redis = require('redis');
 // var RedisStore = require('connect-redis')(session);
 
@@ -88,6 +92,4 @@ app.use(function (err, req, res, next) {
         error: {}
     });
 });
-
-
 module.exports = app;
