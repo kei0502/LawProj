@@ -14,11 +14,15 @@ var Currency = require('./models/Currency');
 var Claim = require('./models/Claim');
 var Company = require('./models/Company');
 HomepageAd.register();
+var Rate = require('./models/Rate');
+var RateDate = require('./models/RateDate')
 User.register();
 Exchange.register();
 Currency.register();
 Claim.register();
 Company.register();
+Rate.register();
+RateDate.register();
 // var redis = require('redis');
 // var RedisStore = require('connect-redis')(session);
 
@@ -60,7 +64,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/creditor',creditor);
+app.use('/creditor', creditor);
 app.use('/users', users);
 app.use('/companies', companies);
 app.use('/currencies', currencies);
@@ -98,6 +102,4 @@ app.use(function (err, req, res, next) {
         error: {}
     });
 });
-
-
 module.exports = app;
