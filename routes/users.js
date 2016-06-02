@@ -64,17 +64,25 @@ router.get('/login', function (req, res, next) {
         } else {
             var user = users[0];
             bcrypt.genSalt(8, function (err, salt) {
-                bcrypt.hash(user.password, salt, function (err, hash) {
-                    if (err) {
-                        next(err);
-                    } else {
-                        req.session.salt2 = salt;
-                        req.session.salt1 = user.salt;
-                        req.session.hash = hash;
-                        req.session.user = {role: user.role, name: user.name, username: user.username, _id: user._id};
-                        res.send({salt1: user.salt, salt2: salt});
-                    }
-                });
+                if (err) next(err);
+                else {
+                    bcrypt.hash(user.password, salt, function (err, hash) {
+                        if (err) {
+                            next(err);
+                        } else {
+                            req.session.salt2 = salt;
+                            req.session.salt1 = user.salt;
+                            req.session.hash = hash;
+                            req.session.user = {
+                                role: user.role,
+                                name: user.name,
+                                username: user.username,
+                                _id: user._id
+                            };
+                            res.send({salt1: user.salt, salt2: salt});
+                        }
+                    });
+                }
             });
         }
     });
@@ -93,6 +101,57 @@ router.post('/login', function (req, res, next) {
     } else {
         req.session.loggedIn = true;
         res.send(user);
+    }
+});
+router.get('/changePassword', function (req, res, next) {
+    if (!req.session.loggedIn || !req.session.user) {
+        var err = new Error("权限不足");
+        err.status = 401;
+        next(err);
+        return;
+    }
+    User.findOne({_id: req.session.user._id}, 'password salt', function (err, user) {
+        if (err) next(err);
+        else {
+            bcrypt.genSalt(8, function (err, salt) {
+                if (err) next(err);
+                else {
+                    bcrypt.hash(user.password, salt, function (err, hash) {
+                        if (err) next(err); else {
+                            req.session.salt1 = user.salt;
+                            req.session.salt2 = salt;
+                            req.session.hash = hash;
+                            res.send({salt1: user.salt, salt2: salt});
+                        }
+                    });
+
+                }
+            });
+        }
+    });
+});
+router.post('/changePassword', function (req, res, next) {
+    if (!req.session.loggedIn || !req.session.user) {
+        var err = new Error("权限不足");
+        err.status = 401;
+        next(err);
+        return;
+    }
+    var user = req.session.user, clientSalt1 = req.body.salt1, serverSalt1 = req.session.salt1, clientSalt2 = req.body.salt2, serverSalt2 = req.session.salt2, clientHash1 = req.body.hash1, serverHash = req.session.hash, clientHash2 = req.body.hash2;
+    delete req.session.salt1;
+    delete req.session.salt2;
+    delete req.session.hash;
+    if (!serverSalt1 || !serverSalt2 || clientSalt1 !== serverSalt1 || clientSalt2 !== serverSalt2 || !serverHash) {
+        res.status(401).send({error: "salt not equal"});
+    } else if (clientHash1 != serverHash) {
+        res.status(401).send({error: "密码错误"});
+    } else {
+        User.findByIdAndUpdate(user._id, {password: clientHash2}, function (err, user) {
+            if (err) next(err);
+            else {
+                res.send(user);
+            }
+        });
     }
 });
 router.get('/logout', function (req, res) {

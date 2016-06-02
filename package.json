@@ -3,33 +3,33 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "bin/prestart.sh",
-    "start": "node ./bin/www"
+    "prestart": "atool-build -o ./public/js/",
+    "start": "node ./bin/www",
+    "build": "atool-build -o ./public/js/"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "react": "global:React",
-    "react-dom": "global:ReactDOM",
-    "jquery": "global:$",
-    "bcrypt": "global:dcodeIO.bcrypt",
-    "moment": "global:moment",
-    "react-bootstrap-datetimepicker": "global:ReactBootstrapDatetimepicker",
-    "react-data-components": "global:ReactDataComponents"
+  "entry": {
+    "web/index": "./views/web/index/main.jsx",
+    "web/case": "./views/web/case/main.jsx",
+    "web/company": "./views/web/company/main.jsx",
+    "index": "./views/index/main.jsx",
+    "creditor/company": "./views/creditor/company/main.jsx",
+    "creditor/claim": "./views/creditor/claim/main.jsx"
   },
   "dependencies": {
+    "antd": "^1.1.0",
+    "atool-build": "0.7.x",
+    "babel-plugin-antd": "0.4.x",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
     "babelify": "^6.3.0",
     "bcrypt": "^0.8.6",
     "body-parser": "~1.13.2",
-    "browserify": "^13.0.0",
-    "browserify-shim": "^3.8.12",
+    "classnames": "^2.2.5",
     "connect-multiparty": "^2.0.0",
     "connect-redis": "^3.0.2",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
+    "es3ify-loader": "^0.2.0",
     "express": "~4.13.1",
     "express-react-views": "^0.10.1",
     "express-session": "~1.13.0",
@@ -40,10 +40,8 @@
     "mongoose": "^4.4.14",
     "morgan": "~1.6.1",
     "node-schedule": "^1.1.0",
-    "react": "^0.14.8",
-    "react-bootstrap-datetimepicker": "0.0.22",
-    "react-data-components": "^0.6.0",
-    "react-dom": "^0.14.8",
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2",
     "redis": "^2.6.0-2",
     "request": "^2.72.0",
     "serve-favicon": "~2.3.0"

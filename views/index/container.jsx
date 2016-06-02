@@ -1,18 +1,20 @@
-var React = require('react'), ReactDOMServer = require('react-dom/server');
-var Head = require('../layouts/head'), Index = require('./index'), Scripts = require('../layouts/scripts');
-var IndexContainer = React.createClass({
-    render: function () {
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import Head from '../layouts/head';
+import Scripts from '../layouts/scripts';
+import View from './view';
+var Container = React.createClass({
+    render() {
         var data = this.props.data, contentHtml = ReactDOMServer.renderToString(
-            <Index {...data}/>), initScript = 'main(' + JSON.stringify(data).replace(/script/g, 'scr"+"ipt') + ');';
+            <View {...data}/>), initScript = 'var data = ' + JSON.stringify(data).replace(/script/g, 'scr"+"ipt') + ';';
         return (<html lang="zh-CN">
-        <Head title={this.props.title}/>
+        <Head title={this.props.title} filename="index"/>
         <body>
-        <div id="container" dangerouslySetInnerHTML={{__html: contentHtml}}/>
-        <Scripts/>
-        <script src="/js/index/main.js"/>
+        <div id="react-content" dangerouslySetInnerHTML={{__html: contentHtml}}/>
         <script dangerouslySetInnerHTML={{__html: initScript}}/>
+        <Scripts filename="index"/>
         </body>
         </html>);
     }
 });
-module.exports = IndexContainer;
+module.exports = Container;

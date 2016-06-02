@@ -7,11 +7,13 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://202.120.40.73/law');
+var HomepageAd = require('./models/HomepageAd');
 var User = require('./models/User');
 var Exchange = require('./models/Exchange');
 var Currency = require('./models/Currency');
 var Claim = require('./models/Claim');
 var Company = require('./models/Company');
+HomepageAd.register();
 User.register();
 Exchange.register();
 Currency.register();
@@ -21,6 +23,7 @@ Company.register();
 // var RedisStore = require('connect-redis')(session);
 
 var routes = require('./routes/index');
+var creditor = require('./routes/creditor');
 var users = require('./routes/users');
 var companies = require('./routes/companies');
 var currencies = require('./routes/currencies');
@@ -36,7 +39,11 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jsx');
-app.engine('jsx', require('express-react-views').createEngine({beautify: true}));
+app.engine('jsx', require('express-react-views').createEngine({
+    beautify: true,
+    transformViews: true,
+    babel: {presets: ['react', 'es2015']}
+}));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -53,6 +60,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/creditor',creditor);
 app.use('/users', users);
 app.use('/companies', companies);
 app.use('/currencies', currencies);

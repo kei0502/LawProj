@@ -1,9 +1,45 @@
-var express = require('express'), authentication = require('./authentication'), Company = require('../models/Company').model(), Currency = require('../models/Currency').model(), Claim = require('../models/Claim').model(), moment = require('moment');
+var express = require('express'), authentication = require('./authentication'), HomepageAd = require('../models/HomepageAd').model(), Company = require('../models/Company').model(), Currency = require('../models/Currency').model(), Claim = require('../models/Claim').model(), moment = require('moment');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render("index/container", {data: req.session.loggedIn ? {user: req.session.user} : {}});
+    HomepageAd.find({}, function (err, ads) {
+        if (err) next(err);
+        else {
+            res.render("web/index/container", {
+                data: req.session.loggedIn ? {
+                    user: req.session.user,
+                    ads: ads
+                } : {ads: ads}
+            });
+        }
+    });
+});
+router.get('/case', function (req, res, next) {
+    Company.find({}, "name create case_type", function (err, companies) {
+        if (err) next(err);
+        else {
+            var companies2 = companies.map(company=>({
+                _id: company._id,
+                name: company.name,
+                create: moment(company.create).format("YYYY-MM-DD"),
+                case_type: company.case_type
+            }));
+            res.render('web/case/container', {
+                data: req.session.loggedIn ? {
+                    user: req.session.user,
+                    companies: companies2
+                } : {companies: companies2}
+            });
+        }
+    });
+});
+router.get('/platform', function (req, res, next) {
+    if (req.session.loggedIn) {
+        res.redirect('/creditor/company');
+    } else {
+        res.render('index/container', {data: {}});
+    }
 });
 router.get('/company/management', authentication.admin, function (req, res, next) {
     var user = req.session.user;
@@ -41,6 +77,42 @@ router.get('/company/apply', authentication.creditor, function (req, res, next) 
         }
     });
 });
+router.get('/case/:id', authentication.creditor, function (req, res, next) {
+    Company.findOne({_id: req.params.id}, function (err, company) {
+        if (err) next(err);
+        else if (!company) {
+            var err = new Error("Wrong company id");
+            err.status = 400;
+            next(err);
+        } else {
+            res.render('web/company/container', {
+                data: {
+                    user: req.session.user, company: {
+                        _id: company._id,
+                        cid: company.cid,
+                        case_type: company.case_type,
+                        code: company.code,
+                        name: company.name,
+                        representative: company.representative,
+                        cfo: company.cfo,
+                        address3: company.address3,
+                        address: company.address,
+                        create: moment(company.create).format("YYYY-MM-DD"),
+                        expire: moment(company.expire).format("YYYY-MM-DD"),
+                        court: company.court,
+                        judge: company.judge,
+                        collegiates: company.collegiates,
+                        note: company.note,
+                        vote_start: company.vote_start ? moment(company.vote_start).format("YYYY-MM-DD HH:mm") : undefined,
+                        vote_end: company.vote_end ? moment(company.vote_end).format("YYYY-MM-DD HH:mm") : undefined,
+                        spot: company.spot,
+                        closed: company.closed
+                    }
+                }
+            });
+        }
+    });
+});
 router.get('/claim/add', authentication.creditor, function (req, res, next) {
     var companyId = req.query.companyId;
     if (!companyId) {
@@ -52,7 +124,7 @@ router.get('/claim/add', authentication.creditor, function (req, res, next) {
     Company.findOne({
         _id: companyId,
         expire: {$gte: moment(moment().format('YYYY-MM-DD')).toDate()}
-    }, 'settlement', function (err, company) {
+    }, 'create', function (err, company) {
         if (err) {
             next(err);
         } else if (null == company) {
@@ -62,7 +134,7 @@ router.get('/claim/add', authentication.creditor, function (req, res, next) {
         } else {
             Currency.find().populate({
                 path: 'exchange',
-                match: {date: {$lte: company.settlement}},
+                match: {date: {$lte: company.create}},
                 options: {sort: {date: 'desc'}, limit: 1}
             }).exec(function (err, currencies) {
                 if (err) {
@@ -73,7 +145,7 @@ router.get('/claim/add', authentication.creditor, function (req, res, next) {
                             user: req.session.user,
                             currencies: currencies,
                             companyId: companyId,
-                            settlement: moment(company.settlement).format('YYYY-MM-DD'),
+                            create: moment(company.create).format('YYYY-MM-DD'),
                             editable: true
                         }
                     });

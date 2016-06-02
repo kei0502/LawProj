@@ -11,8 +11,9 @@ var register = function () {
         agents: [{type: Schema.Types.ObjectId, ref: 'User'}],
         phone: String,
         fax: String,
-        postcode: String,
+        address3: [Number],
         address: String,
+        postcode: String,
         reason: String,
         file: String,
         guarantee: {type: {name: String, money: Number, style: Number}, default: undefined},
@@ -25,6 +26,10 @@ var register = function () {
         claim_information: String,
         attachments: {type: [{name: String, path: String, style: Number}], default: []},
         display: String,
+        verify_court: {text: String},
+        verify_company: {text: String, file: String},
+        verify_accountant: {text: String, file: String},
+        verify_liquidation: {text: String, file: String},
         state: {type: Number, default: 1}
     });
     mongoose.model('Claim', Claims);
