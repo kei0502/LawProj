@@ -64,7 +64,7 @@ let ModalClaim = React.createClass({
             };
         }
     }, handleOk(){
-        const {getFieldValue, validateFields}=this.props.form;
+        const {getFieldValue, validateFields, resetFields}=this.props.form;
         if (getFieldValue('judged') && this.state.judgedFileList.length === 0) {
             return;
         }
@@ -169,6 +169,10 @@ let ModalClaim = React.createClass({
         this.setState({attachmentList: this.state.attachmentList.filter(f=>(f.uid !== file.uid))});
     }, handleFilePreview(file){
         window.open(file.url);
+    }, recheckGuaranteed(rule, value, callback) {
+        const {validateFields}=this.props.form;
+        validateFields(['guaranteedName', 'guaranteedMoney', 'guaranteedStyle'], {force: true});
+        callback();
     }, checkGuaranteedName(rule, value, callback){
         const {getFieldValue}=this.props.form;
         if (getFieldValue('guaranteed') && !value) callback("请输入担保人名称");
@@ -181,10 +185,18 @@ let ModalClaim = React.createClass({
         const {getFieldValue}=this.props.form;
         if (getFieldValue('guaranteed') && !value) callback("请选择担保形式");
         else callback();
+    }, recheckJudged(rule, value, callback) {
+        const {validateFields}=this.props.form;
+        validateFields(['judgedMoney'], {force: true});
+        callback();
     }, checkJudgedMoney(rule, value, callback) {
         const {getFieldValue}=this.props.form;
         if (getFieldValue('judged') && value === undefined) callback('请输入诉讼/保全/执行费');
         else callback();
+    }, recheckInterest(rule, value, callback){
+        const {validateFields}=this.props.form;
+        validateFields(['interestStart'], {force: true});
+        callback();
     }, checkInterestStart(rule, value, callback) {
         const {getFieldValue}=this.props.form;
         if (getFieldValue('interestCalculate') && !value) callback('请输入利息起始日期');
@@ -225,6 +237,8 @@ let ModalClaim = React.createClass({
                     attachmentList: []
                 });
             }
+            const {resetFields}=this.props.form;
+            resetFields();
         }
     }, render(){
         const formItemLayout = {
@@ -245,7 +259,10 @@ let ModalClaim = React.createClass({
         const addressProps = getFieldProps('address', getRequiredString(claim ? claim.address : (claim2 ? claim2.address : undefined), "请输入详细地址"));
         const postcodeProps = getFieldProps('postcode', getRequiredString(claim ? claim.postcode : (claim2 ? claim2.postcode : undefined), "请输入邮编"));
         const reasonProps = getFieldProps('reason', getRequiredString(claim ? claim.reason : undefined, "请输入债权形成原因"));
-        const guaranteedProps = getFieldProps('guaranteed', getRequiredBoolean(claim ? !!claim.guarantee : undefined, "请选择是否担保"));
+        const guaranteedProps = getFieldProps('guaranteed', {
+            initialValue: claim ? !!claim.guarantee : undefined,
+            rules: [{required: true, type: 'boolean', message: "请选择是否担保"}, {validator: this.recheckGuaranteed}]
+        });
         const guaranteedNameProps = getFieldProps('guaranteedName', {
             initialValue: claim && claim.guarantee ? claim.guarantee.name : undefined,
             rules: [{validator: this.checkGuaranteedName}]
@@ -258,7 +275,10 @@ let ModalClaim = React.createClass({
             initialValue: claim && claim.guarantee ? claim.guarantee.style : undefined,
             rules: [{validator: this.checkGuaranteedStyle}]
         });
-        const judgedProps = getFieldProps('judged', getRequiredBoolean(claim ? !!claim.judge : undefined, "请选择是否裁决"));
+        const judgedProps = getFieldProps('judged', {
+            initialValue: claim ? !!claim.judge : undefined,
+            rules: [{required: true, type: 'boolean', message: "请选择是否裁决"}, {validator: this.recheckJudged}]
+        });
         const judgedMoneyProps = getFieldProps('judgedMoney', {
             initialValue: claim && claim.judge ? claim.judge.money : undefined,
             rules: [{validator: this.checkJudgedMoney}]
@@ -270,7 +290,10 @@ let ModalClaim = React.createClass({
             rules: [{required: true, type: 'enum', enum: this.props.currencies.map(currency=>(currency._id))}]
         });
         const principalProps = getFieldProps('principal', getRequiredNumber(claim ? claim.principal : undefined, "请输入本金"));
-        const interestCalculateProps = getFieldProps('interestCalculate', getRequiredChoice(claim ? (claim.interest ? claim.interest.calculate : 0) : undefined, "请选择利息计算方式"));
+        const interestCalculateProps = getFieldProps('interestCalculate', {
+            initialValue: claim ? (claim.interest ? claim.interest.calculate : 0) : undefined,
+            rules: [{required: true, type: 'integer', message: "请选择利息计算方式"}, {validator: this.recheckInterest}]
+        });
         const interestStartProps = getFieldProps('interestStart', {
             initialValue: claim && claim.interest ? claim.interest.start : undefined,
             rules: [{validator: this.checkInterestStart}]
