@@ -20,6 +20,10 @@ const getRole = function (role) {
             return '会计';
     }
 };
+const noop = function (e) {
+    e.preventDefault();
+    return false;
+};
 const getCurrentStep = function (company) {
     const current = moment(), expire = moment(company.expire), voteStart = moment(company.vote_start), voteEnd = moment(company.vote_end);
     if (current.isSameOrBefore(expire, 'day')) {
@@ -4093,5 +4097,6 @@ export {
     claimStates,
     interestTypes,
     attachmentTypes,
-    guaranteeStyles
+    guaranteeStyles,
+    noop
 };

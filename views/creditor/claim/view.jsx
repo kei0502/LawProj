@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Table, Button, Form, Select, Menu, Dropdown, Card} from 'antd';
+import {Row, Col, Table, Button, Form, Select, Menu, Dropdown, Card, Icon} from 'antd';
 import Sider from '../../siders/creditor';
 import SearchInput from '../../layouts/SearchInput';
 import Header from '../../layouts/header';
@@ -8,7 +8,8 @@ import TableCompany from '../../layouts/tableCompany';
 import StepsCompany from '../../steps/stepsCompany';
 import StepsClaim from '../../steps/stepsClaim';
 import ModalClaim from '../../modals/claim';
-import {claimTypes, claimStates, getCurrentStep} from '../../util';
+import ModalVerify from '../../modals/verify';
+import {claimTypes, claimStates, getCurrentStep, noop} from '../../util';
 const Option = Select.Option;
 const MenuItem = Menu.Item;
 const View = React.createClass({
@@ -20,7 +21,8 @@ const View = React.createClass({
             modalVisible: this.props.modalVisible,
             type: 0,
             state: 0,
-            modalDisabled: false
+            modalDisabled: false,
+            verifyVisible: false
         };
     }, handleTypeChange(value){
         this.setState({type: value});
@@ -32,6 +34,8 @@ const View = React.createClass({
         this.setState({modalVisible: true, claim: undefined, modalDisabled: false});
     }, hideModal(){
         this.setState({modalVisible: false});
+    }, closeVerify(){
+        this.setState({verifyVisible: false});
     }, view(claim){
         return (e)=> {
             e.preventDefault();
@@ -41,6 +45,11 @@ const View = React.createClass({
         return (e)=> {
             e.preventDefault();
             this.setState({modalVisible: true, claim: claim, modalDisabled: false});
+        }
+    }, verify(claim){
+        return (e)=> {
+            e.preventDefault();
+            this.setState({verifyVisible: true, claim: claim});
         }
     }, modalSuccess(claim){
         for (let i = 0; i < this.state.claims.length; i++) {
@@ -192,6 +201,8 @@ const View = React.createClass({
                                     claim2={this.state.claims.length>0?this.state.claims[0]:undefined}
                                     interestEnd={this.props.company.create} currencies={this.props.currencies}
                                     companyId={this.props.company._id} success={this.modalSuccess}/>
+                        <ModalVerify claim={this.state.claim} visible={this.state.verifyVisible}
+                                     close={this.closeVerify}/>
                     </Card>
                 </Col>
             </Row>
