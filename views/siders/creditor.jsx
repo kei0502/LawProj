@@ -15,12 +15,14 @@ const CreditorSider = React.createClass({
                     }
                 }
                 return false;
-            }).map(company=>(<Menu.SubMenu title={<span><Icon type="appstore-o"/><span>{company.name}</span></span>} key={"company_"+company._id}>
+            }).map(company=>(<Menu.SubMenu title={<span><Icon type="appstore-o"/><span>{company.name}</span></span>}
+                                           key={"company_"+company._id}>
                 <Menu.Item key={'creditor/claim?companyId='+company._id}>债权申报</Menu.Item>
                 <Menu.Item key={'creditor/dispatch?companyId='+company._id}>报告发文</Menu.Item>
                 <Menu.Item key={'creditor/release?companyId='+company._id}>信息披露</Menu.Item>
-                <Menu.Item key={'creditor/vote?companyId='+company._id}>债权人会议</Menu.Item>
-                <Menu.Item key={'creditor/distribution?companyId='+company._id}>分配与清算</Menu.Item>
+                <Menu.Item key={'creditor/vote?companyId='+company._id} disabled={!company.vote_start}>债权人会议</Menu.Item>
+                <Menu.Item key={'creditor/distribution?companyId='+company._id}
+                           disabled={!company.vote_start}>分配与清算</Menu.Item>
                 <Menu.Item key={'creditor/question?companyId='+company._id}>债权问答</Menu.Item>
             </Menu.SubMenu>))}
         </Menu>);

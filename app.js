@@ -11,6 +11,7 @@ var HomepageAd = require('./models/HomepageAd');
 var User = require('./models/User');
 var Dispatch = require('./models/Dispatch');
 var Release = require('./models/Release');
+var Question = require('./models/Question');
 var Exchange = require('./models/Exchange');
 var Currency = require('./models/Currency');
 var Claim = require('./models/Claim');
@@ -21,6 +22,7 @@ HomepageAd.register();
 User.register();
 Dispatch.register();
 Release.register();
+Question.register();
 Exchange.register();
 Currency.register();
 Claim.register();
@@ -37,6 +39,7 @@ var companies = require('./routes/companies');
 var currencies = require('./routes/currencies');
 var claims = require('./routes/claims');
 var dispatches = require('./routes/dispatches');
+var questions = require('./routes/questions');
 
 var app = express();
 
@@ -75,6 +78,7 @@ app.use('/companies', companies);
 app.use('/currencies', currencies);
 app.use('/claims', claims);
 app.use('/dispatches', dispatches);
+app.use('/questions', questions);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

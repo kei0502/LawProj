@@ -34,7 +34,7 @@ const View = React.createClass({
             <Header user={this.props.user}/>
             <Row>
                 <Col span={4}><Sider companies={this.props.companies}/></Col>
-                <Col span={18} offset={1}><Card title="报告发文">
+                <Col span={18} offset={1}><Card title="信息披露">
                     <Row><Col span={6} offset={18}><SearchInput onSearch={this.handleSearch}/></Col></Row>
                     <Table pagination={{total:releases.length,pageSize:20}} columns={columns}
                            dataSource={releases.map(release=>({_id:release._id,key:release._id,name:release.name,files:release.files,date:release.date}))}/>

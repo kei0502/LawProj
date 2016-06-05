@@ -256,4 +256,60 @@ router.get('/release', function (req, res, next) {
         }
     });
 });
+router.get("/question", function (req, res, next) {
+    var companyId = req.query.companyId;
+    if (!companyId) {
+        var err = new Error("Empty company id");
+        err.status = 400;
+        next(err);
+        return;
+    }
+    Company.findById(companyId, 'questions').populate({
+        path: 'questions',
+        match: {raiser: req.session.user._id}
+    }).exec(function (err, company) {
+        if (err) next(err);
+        else if (!company) {
+            var err = new Error("Wrong company id");
+            err.status = 400;
+            next(err);
+        } else {
+            Company.find({}, 'name expire vote_start vote_end closed spot claims').populate({
+                path: 'claims',
+                match: {agents: req.session.user._id},
+                select: 'state'
+            }).exec(function (err, companies) {
+                if (err) next(err);
+                else {
+                    res.render('creditor/question/container', {
+                        data: {
+                            user: req.session.user, companyId: companyId, companies: companies.map(function (company2) {
+                                return {
+                                    _id: company2._id,
+                                    name: company2.name,
+                                    expire: moment(company2.expire).format('YYYY-MM-DD'),
+                                    vote_start: company2.vote_start ? moment(company2.vote_start).format('YYYY-MM-DD HH:mm') : undefined,
+                                    vote_end: company2.vote_end ? moment(company2.vote_end).format('YYYY-MM-DD HH:mm') : undefined,
+                                    spot: company2.spot,
+                                    closed: company2.closed,
+                                    claims: company2.claims
+                                }
+                            }), questions: company.questions.map(function (question) {
+                                return {
+                                    _id: question._id, ask: {
+                                        time: moment(question.ask.time).format('YYYY-MM-DD HH:mm'),
+                                        text: question.ask.text
+                                    }, answer: question.answer ? {
+                                        time: moment(question.answer.time).format('YYYY-MM-DD HH:mm'),
+                                        text: question.answer.text
+                                    } : undefined
+                                };
+                            })
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
 module.exports = router;

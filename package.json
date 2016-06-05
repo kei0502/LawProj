@@ -15,7 +15,8 @@
     "creditor/company": "./views/creditor/company/main.jsx",
     "creditor/claim": "./views/creditor/claim/main.jsx",
     "creditor/dispatch": "./views/creditor/dispatch/main.jsx",
-    "creditor/release": "./views/creditor/release/main.jsx"
+    "creditor/release": "./views/creditor/release/main.jsx",
+    "creditor/question": "./views/creditor/question/main.jsx"
   },
   "dependencies": {
     "antd": "^1.1.0",

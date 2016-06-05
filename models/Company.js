@@ -28,7 +28,8 @@ var register = function () {
         admin: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
         claims: {type: [{type: Schema.Types.ObjectId, ref: 'Claim'}], default: []},
         dispatches: {type: [{type: Schema.Types.ObjectId, ref: 'Dispatch'}], default: []},
-        releases: {type: [{type: Schema.Types.ObjectId, ref: 'Release'}], default: []}
+        releases: {type: [{type: Schema.Types.ObjectId, ref: 'Release'}], default: []},
+        questions: {type: [{type: Schema.Types.ObjectId, ref: 'Question'}], default: []}
     });
     mongoose.model('Company', Companies);
 };
