@@ -4,7 +4,7 @@
 var express = require('express'), moment = require('moment'), authentication = require('./authentication'), Company = require('../models/Company').model(), Currency = require('../models/Currency').model();
 var router = express.Router();
 router.use(authentication.creditor);
-router.get("/company", function (req, res) {
+router.get("/company", function (req, res, next) {
     Company.find({}, 'name create case_type expire vote_start vote_end closed spot claims').populate({
         path: 'claims',
         match: {agents: req.session.user._id},
@@ -34,7 +34,7 @@ router.get("/company", function (req, res) {
     });
 });
 function getClaimCallback(add) {
-    return function (req, res) {
+    return function (req, res, next) {
         var companyId = req.query.companyId;
         if (!companyId) {
             var err = new Error("Empty company id");
@@ -149,4 +149,58 @@ function getClaimCallback(add) {
 }
 router.get('/claim', getClaimCallback());
 router.get('/claim/add', getClaimCallback(true));
+router.get('/dispatch', function (req, res, next) {
+    var companyId = req.query.companyId;
+    if (!companyId) {
+        var err = new Error("Empty company id");
+        err.status = 400;
+        next(err);
+        return;
+    }
+    Company.findById(companyId, 'dispatches').populate({
+        path: 'dispatches',
+        match: {receiver: req.session.user._id}
+    }).exec(function (err, company) {
+        if (err) next(err);
+        else if (!company) {
+            var err = new Error("Wrong company id");
+            err.status = 400;
+            next(err);
+        } else {
+            Company.find({}, 'name expire vote_start vote_end closed spot claims').populate({
+                path: 'claims',
+                match: {agents: req.session.user._id},
+                select: 'state'
+            }).exec(function (err, companies) {
+                if (err) next(err);
+                else {
+                    res.render('creditor/dispatch/container', {
+                        data: {
+                            user: req.session.user, companies: companies.map(function (company2) {
+                                return {
+                                    _id: company2._id,
+                                    name: company2.name,
+                                    expire: moment(company2.expire).format('YYYY-MM-DD'),
+                                    vote_start: company2.vote_start ? moment(company2.vote_start).format('YYYY-MM-DD HH:mm') : undefined,
+                                    vote_end: company2.vote_end ? moment(company2.vote_end).format('YYYY-MM-DD HH:mm') : undefined,
+                                    spot: company2.spot,
+                                    closed: company2.closed,
+                                    claims: company2.claims
+                                }
+                            }), dispatches: company.dispatches.map(function (dispatch) {
+                                return {
+                                    _id: dispatch._id,
+                                    name: dispatch.name,
+                                    file: dispatch.file,
+                                    date: moment(dispatch.date).format('YYYY-MM-DD'),
+                                    response: dispatch.response
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
 module.exports = router;

@@ -13,7 +13,8 @@
     "web/company": "./views/web/company/main.jsx",
     "index": "./views/index/main.jsx",
     "creditor/company": "./views/creditor/company/main.jsx",
-    "creditor/claim": "./views/creditor/claim/main.jsx"
+    "creditor/claim": "./views/creditor/claim/main.jsx",
+    "creditor/dispatch": "./views/creditor/dispatch/main.jsx"
   },
   "dependencies": {
     "antd": "^1.1.0",

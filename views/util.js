@@ -46,6 +46,8 @@ const claimStates = ["等待审核", "代理身份已确认", "债权申报已�
 const interestTypes = ["无利息", "百元基数计息法", "积数计息法", "利余", "其他"];
 const attachmentTypes = ["申报书", "证明材料", "其他"];
 const guaranteeStyles = ["保证", "抵押", "质押"];
+const responseStyles = ["知悉", "同意", "反对"];
+const responseColors = [undefined, "green", "red"];
 const chinaSelect = [{
     "value": 110000,
     "label": "北京市",
@@ -4098,5 +4100,7 @@ export {
     interestTypes,
     attachmentTypes,
     guaranteeStyles,
-    noop
+    noop,
+    responseStyles,
+    responseColors
 };

@@ -9,14 +9,16 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://202.120.40.73/law');
 var HomepageAd = require('./models/HomepageAd');
 var User = require('./models/User');
+var Dispatch = require('./models/Dispatch');
 var Exchange = require('./models/Exchange');
 var Currency = require('./models/Currency');
 var Claim = require('./models/Claim');
 var Company = require('./models/Company');
 HomepageAd.register();
 var Rate = require('./models/Rate');
-var RateDate = require('./models/RateDate')
+var RateDate = require('./models/RateDate');
 User.register();
+Dispatch.register();
 Exchange.register();
 Currency.register();
 Claim.register();
@@ -32,6 +34,7 @@ var users = require('./routes/users');
 var companies = require('./routes/companies');
 var currencies = require('./routes/currencies');
 var claims = require('./routes/claims');
+var dispatches = require('./routes/dispatches');
 
 var app = express();
 
@@ -69,6 +72,7 @@ app.use('/users', users);
 app.use('/companies', companies);
 app.use('/currencies', currencies);
 app.use('/claims', claims);
+app.use('/dispatches', dispatches);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
