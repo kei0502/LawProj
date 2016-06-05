@@ -27,7 +27,8 @@ var register = function () {
         validator_accountant: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
         admin: {type: [{type: Schema.Types.ObjectId, ref: 'User'}], default: []},
         claims: {type: [{type: Schema.Types.ObjectId, ref: 'Claim'}], default: []},
-        dispatches: {type: [{type: Schema.Types.ObjectId, ref: 'Dispatch'}], default: []}
+        dispatches: {type: [{type: Schema.Types.ObjectId, ref: 'Dispatch'}], default: []},
+        releases: {type: [{type: Schema.Types.ObjectId, ref: 'Release'}], default: []}
     });
     mongoose.model('Company', Companies);
 };
